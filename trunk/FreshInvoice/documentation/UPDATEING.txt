@@ -1,0 +1,15 @@
+20 july 2006 from 1.0 to 1.1
+- Execute upgrade.sql via PHPMyAdmin.
+- Make a new dir: old
+- Save your original config.inc.php as config.inc.php.old
+- Move all your files to the directory old
+- Upload all files to the main directory
+- Edit config.inc.php (copy paste settings from the original)
+- Add a few categories
+- Sort all items in a categorie (via beheer artikelen, edit).
+
+If you have any problems, comments, cheers or feature requests don't, hasitate to contact:
+
+Arnoud Vermeer
+FreshWay Innovations
+a.vermeer@freshway.biz

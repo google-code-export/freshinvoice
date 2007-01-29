@@ -1,0 +1,22 @@
+21 july 2006 version 1.1.1
+- catagorie delete bug
+- round bug invoice page
+- displayMoney &euro; instead of ASCI
+- The sum-query on the invoice page must be from the current quarter in stead of previous one
+- Fixed the home button
+- Fixed the include in cron.php
+
+20 july 2006 version 1.1
+- invoice to late date in reminder mail fix (Arnoud Vermeer).
+- overview invoices shortend to this quarter (Arnoud Vermeer).
+- overview previous quarter added (Arnoud Vermeer).
+- overview of all invoices added (Arnoud Vermeer).
+- invoices at the end of the month bug fixed, >28 days (Arnoud Vermeer).
+- product categories added (Arnoud Vermeer).
+- all the countries of the world added (Arnoud Vermeer).
+- forgot my password added (Arnoud Vermeer).
+- on the invoice page, sum of open and processed invoices (Martijn Veldhuizen).
+- soon ends fixed (Martijn Veldhuizen).
+
+1 februari 2005 version 1.0
+- oorspronkelijke release van freshinvoice (Arnoud Vermeer).
