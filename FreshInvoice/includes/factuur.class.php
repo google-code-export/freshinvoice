@@ -456,19 +456,19 @@ class factuur {
 	function auto_herhaal ($periode, $sign='='){
 		switch($periode){
 			case "jaar":
-				$time 	= mktime(0,0,1,date("m"),date("d"),date("Y")-1);
+				$time 	= mktime(0,0,0,date("m"),date("d"),date("Y")-1);
 			break;
 
 			case "halfjaar":
-				$time 	= mktime(0,0,1,date("m")-6,date("d"),date("Y"));
+				$time 	= mktime(0,0,0,date("m")-6,date("d"),date("Y"));
 			break;
 
 			case "kwartaal":
-				$time 	= mktime(0,0,1,date("m")-3,date("d"),date("Y"));
+				$time 	= mktime(0,0,0,date("m")-3,date("d"),date("Y"));
 			break;
 			
 			case "maand":
-				$time 	= mktime(0,0,1,date("m")-1,date("d"),date("Y"));
+				$time 	= mktime(0,0,0,date("m")-1,date("d"),date("Y"));
 			break;
 		}
 
