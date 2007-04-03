@@ -5,7 +5,7 @@ include_once('config.inc.php');
 
 class factuur {
 	
-	function klant_invoegen ($mail,$password1,$password2,$voornaam,$tussenvoegsel,$achternaam,$geslacht,$bedrijfsnaam,$straatnaam,$huisnummer,$postcode,$plaatsnaam,$land,$telefoon,$fax,$BTWnummer,$KVKnummer,$KVKplaats){
+	function klant_invoegen ($mail,$password1,$password2,$voornaam,$tussenvoegsel,$achternaam,$geslacht,$bedrijfsnaam,$straatnaam,$huisnummer,$postcode,$plaatsnaam,$land,$telefoon,$fax,$BTWnummer,$KVKnummer,$KVKplaats,$bedrijfsvorm){
 		if(!preg_match('/([A-Za-z0-9_.]+)@([A-Za-z0-9.]+)/',$mail)){
 			$this->error('Er is geen e-mail adres opgegeven');
 		}elseif(!isset($voornaam)){
@@ -34,6 +34,8 @@ class factuur {
 			$this->error('Er is geen KVK nummer opgegeven');
 		}elseif(!isset($KVKplaats) AND isset($bedrijfsnaam)){
 			$this->error('Er is geen KVK plaats opgegeven');
+		}elseif(!isset($bedrijfsvorm) AND isset($bedrijfsnaam)){
+			$this->error('Er is geen bedrijfsvorm opgegeven');
 		}else{
 			$query = "SELECT klantId FROM klant WHERE mail=''";
 			$query = mysql_query($query) or die (mysql_error());
@@ -41,9 +43,9 @@ class factuur {
 				$this->error('Er komt al een klant voor met het opgegeven wachtwoord.<br />Indien u uw wachtwoord bent vergeten kunt u die via "Forgot password" terug halen.');
 			}
 			
-			$query = "INSERT INTO klant (mail,password,voornaam,tussenvoegsel,achternaam,geslacht,bedrijfsnaam,straatnaam,huisnummer,postcode,plaatsnaam,land,telefoon,fax,BTWnummer,KVKnummer,KVKplaats)
+			$query = "INSERT INTO klant (mail,password,voornaam,tussenvoegsel,achternaam,geslacht,bedrijfsnaam,straatnaam,huisnummer,postcode,plaatsnaam,land,telefoon,fax,BTWnummer,KVKnummer,KVKplaats,bedrijfsvorm)
 			VALUES
-			('".$mail."','".md5($password1)."','".addslashes($voornaam)."','".addslashes($tussenvoegsel)."','".addslashes($achternaam)."','".$geslacht."','".addslashes($bedrijfsnaam)."','".addslashes($straatnaam)."','".addslashes($huisnummer)."','".addslashes($postcode)."','".addslashes($plaatsnaam)."','".addslashes($land)."','".addslashes($telefoon)."','".addslashes($fax)."','".addslashes($BTWnummer)."','".addslashes($KVKnummer)."','".$KVKplaats."')";
+			('".$mail."','".md5($password1)."','".addslashes($voornaam)."','".addslashes($tussenvoegsel)."','".addslashes($achternaam)."','".$geslacht."','".addslashes($bedrijfsnaam)."','".addslashes($straatnaam)."','".addslashes($huisnummer)."','".addslashes($postcode)."','".addslashes($plaatsnaam)."','".addslashes($land)."','".addslashes($telefoon)."','".addslashes($fax)."','".addslashes($BTWnummer)."','".addslashes($KVKnummer)."','".$KVKplaats."','".addslashes($bedrijfsvorm)."')";
 			mysql_query($query) or die (mysql_error());
 			
 			$mailcontent  = "Geachte Heer/Mevrouw,\n\n";
@@ -58,7 +60,7 @@ class factuur {
 		}
 	}
 	
-	function change_persoonsgegevens($klantId,$mail,$voornaam,$tussenvoegsel,$achternaam,$geslacht,$bedrijfsnaam,$straatnaam,$huisnummer,$postcode,$plaatsnaam,$land,$telefoon,$fax,$BTWnummer,$KVKnummer,$KVKplaats,$huidige_pass,$password1='',$password2='',$usergroup='',$factuur_opsparen='',$BTWtarrief=''){
+	function change_persoonsgegevens($klantId,$mail,$voornaam,$tussenvoegsel,$achternaam,$geslacht,$bedrijfsnaam,$straatnaam,$huisnummer,$postcode,$plaatsnaam,$land,$telefoon,$fax,$BTWnummer,$KVKnummer,$KVKplaats,$bedrijfsvorm,$huidige_pass,$password1='',$password2='',$usergroup='',$factuur_opsparen='',$BTWtarrief=''){
 		if(!preg_match('/([A-Za-z0-9_.]+)@([A-Za-z0-9.]+)/',$mail)){
 			$this->error('Er is geen e-mail adres opgegeven');
 		}elseif(!isset($voornaam)){
@@ -85,6 +87,8 @@ class factuur {
 			$this->error('Er is geen KVK nummer opgegeven');
 		}elseif(!isset($KVKplaats) AND isset($bedrijfsnaam)){
 			$this->error('Er is geen KVK plaats opgegeven');
+		}elseif(!isset($bedrijfsvorm) AND isset($bedrijfsnaam)){
+			$this->error('Er is geen bedrijfsvorm opgegeven');
 		}else{
 			$query 	= "SELECT password FROM klant WHERE klantId='".$klantId."'";
 			$query 	= mysql_query($query) or die (mysql_error());
@@ -124,7 +128,8 @@ class factuur {
 			SET mail='".$mail."',voornaam='".addslashes($voornaam)."',tussenvoegsel='".addslashes($tussenvoegsel)."',achternaam='".addslashes($achternaam)."',
 			geslacht='".addslashes($geslacht)."',bedrijfsnaam='".addslashes($bedrijfsnaam)."',straatnaam='".addslashes($straatnaam)."',huisnummer='".addslashes($huisnummer)."',
 			postcode='".addslashes($postcode)."',plaatsnaam='".addslashes($plaatsnaam)."',land='".addslashes($land)."',telefoon='".addslashes($telefoon)."',fax='".addslashes($fax)."',
-			BTWnummer='".addslashes($BTWnummer)."',KVKnummer='".addslashes($KVKnummer)."',KVKplaats='".addslashes($KVKplaats)."'".$extra." WHERE klantId='".$klantId."'";
+			BTWnummer='".addslashes($BTWnummer)."',KVKnummer='".addslashes($KVKnummer)."',KVKplaats='".addslashes($KVKplaats)."',bedrijfsvorm='".addslashes($bedrijfsvorm)."'
+			".$extra." WHERE klantId='".$klantId."'";
 			mysql_query($query) or die (mysql_error());
 			
 			return TRUE;

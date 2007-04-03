@@ -232,28 +232,19 @@ switch($_GET['p']){
 	  </tr>
 	  <tr>
 		<td>Kamer van Koophandel nummer (alleen voor bedrijven)</td>
-		<td><input type="text" name="KVKnummer"> in <select name="KVKplaats">
-		<option>Amsterdam</option>
-        <option>Centraal Gelderland</option>
-        <option>Drenthe</option>
-        <option>Flevoland</option>
-        <option>Friesland</option>
-        <option>Gooi-en Eemland</option>
-        <option>Groningen</option>
-        <option>Haaglanden</option>
-        <option>Leiden (Rijnland)</option>
-        <option>Limburg-Noord</option>
-        <option>Midden-Brabant</option>
-        <option>Noordwest-Holland</option>
-        <option>Oost-Brabant</option>
-        <option>Regio Zwolle</option>
-        <option>Rivierenland</option>
-        <option>Rotterdam</option>
-        <option>Utrecht</option>
-        <option>Veluwe en Twente</option>
-        <option>West-Brabant</option>
-        <option>Zeeland</option>
-        <option>Zuid-Limburg</option></select></td>
+		<td><input type="text" name="KVKnummer"> in <select name="KVKplaats">';
+			foreach($KVKplaatsen AS $plaats){
+				echo'<option>'.$plaats.'</option>'."\n";
+			}
+			echo'</select></td>
+	  </tr>
+	  <tr>
+		<td>Bedrijfsvorm (alleen voor bedrijven)</td>
+		<td><select name="bedrijfsvorm">';
+		    foreach($bedrijfsvormen AS $vorm){
+				echo'<option>'.$vorm.'</option>'."\n";
+			}
+			echo'</select></td>
 	  </tr>
 	  <tr>
 		<td>&nbsp;</td>
@@ -266,7 +257,7 @@ switch($_GET['p']){
 	
 	case "do_nieuwe_klant":
 	
-		if($fact->klant_invoegen ($_POST['emailadres'],$_POST['password1'],$_POST['password2'],$_POST['voornaam'],$_POST['tussenvoegsel'],$_POST['achternaam'],$_POST['geslacht'],$_POST['bedrijfsnaam'],$_POST['straat'],$_POST['huisnummer'],$_POST['postcode'],$_POST['plaats'],$_POST['land'],$_POST['telefoon'],$_POST['fax'],$_POST['BTWnummer'],$_POST['KVKnummer'],$_POST['KVKplaats'])){
+		if($fact->klant_invoegen ($_POST['emailadres'],$_POST['password1'],$_POST['password2'],$_POST['voornaam'],$_POST['tussenvoegsel'],$_POST['achternaam'],$_POST['geslacht'],$_POST['bedrijfsnaam'],$_POST['straat'],$_POST['huisnummer'],$_POST['postcode'],$_POST['plaats'],$_POST['land'],$_POST['telefoon'],$_POST['fax'],$_POST['BTWnummer'],$_POST['KVKnummer'],$_POST['KVKplaats'],$_POST['bedrijfsvorm'])){
 			echo '<table width="100%"  border="0" cellspacing="0" cellpadding="1">
 			  <tr>
 				<td width="50%">Nieuwe klant</td>
@@ -354,6 +345,9 @@ switch($_GET['p']){
 			  </tr>
 			  <tr>
 				<td><a href="index.php?p=facturen" target="mainFrame">facturen</a></td>
+			  </tr>
+			  <tr>
+				<td><a href="index.php?p=incasso_overzicht" target="mainFrame">incasso overzicht</a></td>
 			  </tr>
 			  <tr>
 				<td>&nbsp;</td>
@@ -616,6 +610,14 @@ switch($_GET['p']){
 			echo'</select></td>
 		  </tr>
 		  <tr>
+			<td>Bedrijfsvorm (alleen voor bedrijven)</td>
+		    <td><select name="bedrijfsvorm">';
+		    foreach($bedrijfsvormen AS $vorm){
+				echo'<option'; if($record['bedrijfsvorm']==$vorm){ echo ' selected="selected"'; } echo'>'.$vorm.'</option>'."\n";
+			}
+			echo'</select></td>
+	  	  </tr>
+		  <tr>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
 		  </tr>';
@@ -662,7 +664,7 @@ switch($_GET['p']){
 		  </tr>
 		  <tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" name="Submit" value="Aanmelden"></td>
+			<td><input type="submit" name="Submit" value="Aanpassen"></td>
 		  </tr>
 		</table>
 		</form>';
@@ -677,7 +679,7 @@ switch($_GET['p']){
 			$klantId	= $_SESSION['klantId'];
 		}
 	
-		if($fact->change_persoonsgegevens($klantId,$_POST['emailadres'],$_POST['voornaam'],$_POST['tussenvoegsel'],$_POST['achternaam'],$_POST['geslacht'],$_POST['bedrijfsnaam'],$_POST['straat'],$_POST['huisnummer'],$_POST['postcode'],$_POST['plaats'],$_POST['land'],$_POST['telefoon'],$_POST['fax'],$_POST['BTWnummer'],$_POST['KVKnummer'],$_POST['KVKplaats'],$_POST['huidige_pass'],$_POST['password1'],$_POST['password2'],$_POST['usergroup'],$_POST['factuur_opsparen'],$_POST['BTWtarrief'])){
+		if($fact->change_persoonsgegevens($klantId,$_POST['emailadres'],$_POST['voornaam'],$_POST['tussenvoegsel'],$_POST['achternaam'],$_POST['geslacht'],$_POST['bedrijfsnaam'],$_POST['straat'],$_POST['huisnummer'],$_POST['postcode'],$_POST['plaats'],$_POST['land'],$_POST['telefoon'],$_POST['fax'],$_POST['BTWnummer'],$_POST['KVKnummer'],$_POST['KVKplaats'],$_POST['bedrijfsvorm'],$_POST['huidige_pass'],$_POST['password1'],$_POST['password2'],$_POST['usergroup'],$_POST['factuur_opsparen'],$_POST['BTWtarrief'])){
 			echo '<table width="100%" border="0" cellspacing="0" cellpadding="1">
 			  <tr>
 				<td width="50%">Gegevens gewijzigd</td>
@@ -1934,6 +1936,47 @@ switch($_GET['p']){
 			  </tr>
 			</table>';
 		}
+	break;
+	
+	case "incasso_overzicht":
+		$fact->notAllowed('99');
+		
+		$query = "SELECT k.bedrijfsnaam, k.voornaam, k.achternaam, f.klantId, SUM(bedrag) as totaal, k.mail, k.telefoon
+		FROM factuur f, klant k
+		WHERE betaald ='c' and k.klantId = f.klantId
+		GROUP BY f.klantId
+		ORDER BY totaal DESC";
+		$query = mysql_query($query) or die (mysql_error());
+		
+		if(mysql_num_rows($query)==0){
+			$fact->error('Er is zijn geen openstaande facturen');
+		}
+		
+		echo '<table width="100%">
+		<tr>
+		  <td><b>Bedrijfsnaam</b></td>
+		  <td><b>Voornaam</b></td>
+		  <td><b>Achternaam</b></td>
+		  <td><b>klantId</b></td>
+		  <td><b>Totaal</b></td>
+		  <td><b>E-mail</b></td>
+		  <td><b>Telefoon</b></td>
+		</tr>';
+		
+		while($record = mysql_fetch_array($query))
+		{
+			echo '<tr>
+		  	  <td>'.$record['bedrijfsnaam'].'</td>
+		  	  <td>'.$record['voornaam'].'</td>
+		  	  <td>'.$record['achternaam'].'</td>
+		  	  <td>'.$record['klantId'].'</td>
+		  	  <td>'.$record['totaal'].'</td>
+		  	  <td>'.$record['mail'].'</td>
+		  	  <td>'.$record['telefoon'].'</td>
+			</tr>';
+		}
+		
+		echo '</table>';
 	break;
 	
 	case "maak_factuur":
