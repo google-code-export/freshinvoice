@@ -12,21 +12,6 @@ $_GET['p']!='display_factuur')
 	include_once('templates/header.tpl.php');
 }
 
-if($fact->isLoggedIn()){
-	if($_GET['p']!='' &&
-	$_GET['p']!='left_frame' &&
-	$_GET['p']!='finish_factuur' &&
-	$_GET['p']!='json_artikelen_per_cat'){
-		$fact->nav();
-	}
-}else{
-print_r($_GET);
-	if($_GET['p']!='')
-	{
-		$fact->nav();
-	}
-}
-
 switch($_GET['p']){
 	default:
 	
@@ -406,9 +391,13 @@ switch($_GET['p']){
 			  </tr>
 			  <tr>
 				<td><a href="index.php?p=maak_factuur" target="mainFrame">factuur maken</a></td>
+			  </tr>
+			  <tr>
+				<td>&nbsp;</td>
+			  </tr>
+			  <tr>
+				<td><a href="index.php?p=version" target="mainFrame">versie</a></td>
 			  </tr>';
-			  
-			  
 		}
 		  
 		  echo'</table>';
@@ -761,7 +750,7 @@ switch($_GET['p']){
 		  <tr>
 		    <td>Uw versie is: '.VERSION.'<br />
 		    De nieuwste versie is: '.$current.'<br /><br />
-		    U vind de laatste versie via de volgende url: <a href="http://freshmeat.net/projects/freshinvoice/" target="_blank">http://freshmeat.net/projects/freshinvoice/</a></td>
+		    U vind de laatste versie via de volgende url: <a href="http://code.google.com/p/freshinvoice/" target="_blank">http://code.google.com/p/freshinvoice/</a></td>
 		  </tr>
 	</table>';
 	
@@ -1494,7 +1483,7 @@ switch($_GET['p']){
 			<td>Overzicht van alle facturen</td>
 		  </tr>';
 		
-		$query = "SELECT SUM( bedrag ) AS voldaan FROM `factuur` WHERE betaald = 'Y'";
+		$query = "SELECT SUM( bedrag ) AS openstaand FROM `factuur` WHERE betaald = 'Y'";
 		$query = mysql_query($query) or die (mysql_error());
 		$record=mysql_fetch_array($query);
 							
