@@ -20,7 +20,11 @@ if($fact->isLoggedIn()){
 		$fact->nav();
 	}
 }else{
-	$fact->nav();
+print_r($_GET);
+	if($_GET['p']!='')
+	{
+		$fact->nav();
+	}
 }
 
 switch($_GET['p']){
@@ -72,33 +76,6 @@ switch($_GET['p']){
 	}
 	break;
 	
-	case "forgotmypass":
-		echo '<form name="form1" method="post" action="index.php?p=doForgotPassword">
-		<table width="100%"  border="0" cellspacing="0" cellpadding="1">
-		  <tr>
-			<td width="50%">Passwoord vergeten</td>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td>E-mail adres:</td>
-			<td><input type="text" name="emailadres"></td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-			<td><input type="submit" name="Submit" value="Opvragen"></td>
-		  </tr>
-		</table>
-		</form>';
-	break;
-	
 	case "login":
 		echo '<form name="form1" method="post" action="index.php?p=doLogin" target="_parent">
 		<table width="100%"  border="0" cellspacing="0" cellpadding="1">
@@ -132,6 +109,33 @@ switch($_GET['p']){
 	
 	case "top_frame":
 		$fact->nav();
+	break;
+	
+	case "forgotmypass":
+		echo '<form name="form1" method="post" action="index.php?p=doForgotPassword">
+		<table width="100%"  border="0" cellspacing="0" cellpadding="1">
+		  <tr>
+			<td width="50%">Passwoord vergeten</td>
+			<td>&nbsp;</td>
+		  </tr>
+		  <tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		  </tr>
+		  <tr>
+			<td>E-mail adres:</td>
+			<td><input type="text" name="emailadres"></td>
+		  </tr>
+		  <tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		  </tr>
+		  <tr>
+			<td>&nbsp;</td>
+			<td><input type="submit" name="Submit" value="Opvragen"></td>
+		  </tr>
+		</table>
+		</form>';
 	break;
 	
 	case "doForgotPassword":
