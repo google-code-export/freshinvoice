@@ -5,7 +5,9 @@ include_once(PATH.'includes/factuur.class.php');
 $fact = new factuur;
 
 if($_GET['p']!='finish_factuur' &&
-$_GET['p']!='json_artikelen_per_cat')
+$_GET['p']!='' &&
+$_GET['p']!='json_artikelen_per_cat' &&
+$_GET['p']!='display_factuur')
 {
 	include_once('templates/header.tpl.php');
 }
@@ -27,17 +29,78 @@ switch($_GET['p']){
 	if($fact->isLoggedIn()){
 		// FRAMESET
 		
-		echo '<frameset rows="*" cols="137,*" framespacing="0" frameborder="NO" border="0">
-		  <frame src="index.php?p=left_frame" name="leftFrame" scrolling="NO" noresize>
-		  <frame src="index.php?p=home" name="mainFrame">
+		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+		<html>
+		<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Factuursysteem '.BEDRIJFSNAAM.'</title>
+		<link rel="stylesheet" href="'.URL.'style.css" type="text/css" />
+		<script type="text/javascript" language="JavaScript1.2" src="./js/prototype.js"> </script>
+		<script type="text/javascript" language="JavaScript1.2" src="./js/funct.js"> </script>
+		</head>
+		
+		<frameset rows="*" cols="137,*" frameborder="no" border="0" framespacing="0">
+		<frame src="index.php?p=left_frame" name="leftFrame" scrolling="no" noresize="noresize" id="leftFrame" title="leftFrame" />
+		  <frameset rows="40,*" frameborder="no" border="0" framespacing="0">
+			<frame src="index.php?p=top_frame" name="topFrame" scrolling="no" noresize="noresize" id="topFrame" title="topFrame" />
+			<frame src="index.php?p=home" name="mainFrame" id="mainFrame" title="mainFrame" />
+		  </frameset>
 		</frameset>
-		<noframes><body>
-		Uw browser ondersteund geen frames.
-		</body></noframes>';
+		
+		</html>';
 	}else{
 		// LOGIN FORMULIER
 		
-		echo '<form name="form1" method="post" action="index.php?p=doLogin">
+		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+		<html>
+		<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Factuursysteem '.BEDRIJFSNAAM.'</title>
+		<link rel="stylesheet" href="'.URL.'style.css" type="text/css" />
+		<script type="text/javascript" language="JavaScript1.2" src="./js/prototype.js"> </script>
+		<script type="text/javascript" language="JavaScript1.2" src="./js/funct.js"> </script>
+		</head>
+		
+		<frameset rows="40,*" frameborder="no" border="0" framespacing="0">
+		  <frame src="index.php?p=top_frame" name="topFrame" scrolling="no" noresize="noresize" id="topFrame" title="topFrame" />
+		  <frame src="index.php?p=login" name="mainFrame" id="mainFrame" title="mainFrame" />
+		</frameset>
+		
+		</html>';
+	}
+	break;
+	
+	case "forgotmypass":
+		echo '<form name="form1" method="post" action="index.php?p=doForgotPassword">
+		<table width="100%"  border="0" cellspacing="0" cellpadding="1">
+		  <tr>
+			<td width="50%">Passwoord vergeten</td>
+			<td>&nbsp;</td>
+		  </tr>
+		  <tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		  </tr>
+		  <tr>
+			<td>E-mail adres:</td>
+			<td><input type="text" name="emailadres"></td>
+		  </tr>
+		  <tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		  </tr>
+		  <tr>
+			<td>&nbsp;</td>
+			<td><input type="submit" name="Submit" value="Opvragen"></td>
+		  </tr>
+		</table>
+		</form>';
+	break;
+	
+	case "login":
+		echo '<form name="form1" method="post" action="index.php?p=doLogin" target="_parent">
 		<table width="100%"  border="0" cellspacing="0" cellpadding="1">
 		  <tr>
 			<td width="50%">Login</td>
@@ -65,37 +128,10 @@ switch($_GET['p']){
 		  </tr>
 		</table>
 		</form>';
-	}
-	
 	break;
 	
-	case "forgotmypass":
-	
-		echo '<form name="form1" method="post" action="index.php?p=doForgotPassword">
-		<table width="100%"  border="0" cellspacing="0" cellpadding="1">
-		  <tr>
-			<td width="50%">Passwoord vergeten</td>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td>E-mail adres:</td>
-			<td><input type="text" name="emailadres"></td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-			<td><input type="submit" name="Submit" value="Opvragen"></td>
-		  </tr>
-		</table>
-		</form>';
-	
+	case "top_frame":
+		$fact->nav();
 	break;
 	
 	case "doForgotPassword":
@@ -706,6 +742,27 @@ switch($_GET['p']){
 	//						ADMIN FUNCTIONS							//
 	//**************************************************************//
 	
+	case "version":
+	$fact->notAllowed('99');
+	
+	$current = file_get_contents('http://www.freshway.biz/files/freshinvoice.current.txt');
+	
+	echo '<table width="100%" border="0" cellspacing="0" cellpadding="1">
+	  <tr>
+            <td>Huidige versie</td>
+          </tr>
+		  <tr>
+		    <td>&nbsp;</td>
+		  </tr>
+		  <tr>
+		    <td>Uw versie is: '.VERSION.'<br />
+		    De nieuwste versie is: '.$current.'<br /><br />
+		    U vind de laatste versie via de volgende url: <a href="http://freshmeat.net/projects/freshinvoice/" target="_blank">http://freshmeat.net/projects/freshinvoice/</a></td>
+		  </tr>
+	</table>';
+	
+	break;
+	
 	case "binnenkort_verlopen":
         $fact->notAllowed('99');
         
@@ -713,17 +770,17 @@ switch($_GET['p']){
         
         $time     = mktime(0,0,1,date("m")-1,date("d"),date("Y"));
 
-        $query="SELECT k.artikelId, k.opmerking, k.aantal, f.klantId, a.naam, a.verkoop_prijs ,k.dag, k.maand, k.jaar, k.datum
-        FROM koppel_factuur_artikelen k, artikelen a, factuur f
+        $query="SELECT k.artikelId, k.opmerking, k.aantal, f.klantId, a.naam, a.verkoop_prijs ,k.dag, k.maand, k.jaar, k.datum, cl.achternaam, cl.bedrijfsnaam, cl.voornaam 
+        FROM koppel_factuur_artikelen k, artikelen a, factuur f, klant cl
         WHERE k.artikelId = a.artikelId
         AND k.factuurId = f.factuurId
+		AND cl.klantId = f.klantId
         AND a.periode = 'maand' AND
         k.maand='".date("m",$time)."' AND
         k.jaar='".date("Y",$time)."' 
         AND k.opgezegd = 'N'
         AND k.artikelID
         IN (
-
         SELECT k.artikelId
         FROM koppel_factuur_artikelen k
         WHERE k.dag >0
@@ -755,6 +812,7 @@ switch($_GET['p']){
             <td><table width="100%" border="0" cellspacing="0" cellpadding="1">
           <tr>
             <td><b>datum</b></td>
+			<td><b>Naam</b></td>
             <td><b>te factureren object</b></td>
             <td><b>aantal</b></td>
             <td><b>per stuk</b></td>
@@ -763,8 +821,19 @@ switch($_GET['p']){
         $totaal=0;
         
         while($record=mysql_fetch_array($query)){
+			if($record['bedrijfsnaam']!="")
+			{
+				$naam = substr($record['bedrijfsnaam'], 0, 40);
+			}else
+			{
+				$naam = substr($record['achternaam'], 0, 20);
+				$naam.= ', ' ;
+				$naam.= substr($record['voornaam'], 0, 20);
+			}
+			
             echo'<tr>
             <td>'.date(FACTUUR_DATUM_FORMAT,$record['datum']).'</td>
+			<td>'.$naam.'</td>
             <td>'.$record['naam'].': '.$record['opmerking'].'</td>
             <td>'.$record['aantal'].'</td>
             <td>'.$fact->displayMoney($record['verkoop_prijs']).'</td>
@@ -788,17 +857,17 @@ switch($_GET['p']){
         
         $time     = mktime(0,0,1,date("m")-3,date("d"),date("Y"));
 
-        $query="SELECT k.artikelId, k.opmerking, k.aantal, f.klantId, a.naam, a.verkoop_prijs , k.dag, k.maand, k.jaar, k.datum
-        FROM koppel_factuur_artikelen k, artikelen a, factuur f
+        $query="SELECT k.artikelId, k.opmerking, k.aantal, f.klantId, a.naam, a.verkoop_prijs , k.dag, k.maand, k.jaar, k.datum, cl.achternaam, cl.bedrijfsnaam, cl.voornaam 
+        FROM koppel_factuur_artikelen k, artikelen a, factuur f, klant cl
         WHERE k.artikelId = a.artikelId
         AND k.factuurId = f.factuurId
+		AND cl.klantId = f.klantId
         AND a.periode = 'kwartaal' AND
         k.maand='".date("m",$time)."' AND
         k.jaar='".date("Y",$time)."' 
         AND k.opgezegd = 'N'
         AND k.artikelID
         IN (
-
         SELECT k.artikelId
         FROM koppel_factuur_artikelen k
         WHERE k.dag >0
@@ -822,6 +891,7 @@ switch($_GET['p']){
             <td><table width="100%" border="0" cellspacing="0" cellpadding="1">
           <tr>
             <td><b>datum</b></td>
+			<td><b>Naam</b></td>
             <td><b>te factureren object</b></td>
             <td><b>aantal</b></td>
             <td><b>per stuk</b></td>
@@ -829,9 +899,20 @@ switch($_GET['p']){
           </tr>';
         $totaal=0;
         
-        while($record=mysql_fetch_array($query)){
+        while($record=mysql_fetch_array($query))
+		{	
+			if($record['bedrijfsnaam']!="")
+			{
+				$naam = substr($record['bedrijfsnaam'], 0, 40);
+			}else
+			{
+				$naam = substr($record['achternaam'], 0, 20);
+				$naam.= ', ' ;
+				$naam.= substr($record['voornaam'], 0, 20);
+			}
             echo'<tr>
             <td>'.date(FACTUUR_DATUM_FORMAT,$record['datum']).'</td>
+			<td>'.$naam.'</td>
             <td>'.$record['naam'].': '.$record['opmerking'].'</td>
             <td>'.$record['aantal'].'</td>
             <td>'.$fact->displayMoney($record['verkoop_prijs']).'</td>
@@ -856,17 +937,17 @@ switch($_GET['p']){
         
         $time     = mktime(0,0,1,date("m"),date("d"),date("Y")-1);
 
-        $query="SELECT k.artikelId, k.opmerking, k.aantal, f.klantId, a.naam, a.verkoop_prijs , k.dag, k.maand, k.jaar, k.datum
-        FROM koppel_factuur_artikelen k, artikelen a, factuur f
+		$query="SELECT k.artikelId, k.opmerking, k.aantal, f.klantId, a.naam, a.verkoop_prijs , k.dag, k.maand, k.jaar, k.datum, 	cl.achternaam, cl.bedrijfsnaam, cl.voornaam 
+        FROM koppel_factuur_artikelen k, artikelen a, factuur f, klant cl
         WHERE k.artikelId = a.artikelId
         AND k.factuurId = f.factuurId
+		AND cl.klantId = f.klantId
         AND a.periode = 'jaar' AND
         k.maand='".date("m",$time)."' AND
         k.jaar='".date("Y",$time)."' 
         AND k.opgezegd = 'N'
         AND k.artikelID
         IN (
-
         SELECT k.artikelId
         FROM koppel_factuur_artikelen k
         WHERE k.dag >0
@@ -888,6 +969,7 @@ switch($_GET['p']){
             <td><table width="100%" border="0" cellspacing="0" cellpadding="1">
           <tr>
             <td><b>datum</b></td>
+			<td><b>Naam</b></td>
             <td><b>te factureren object</b></td>
             <td><b>aantal</b></td>
             <td><b>per stuk</b></td>
@@ -895,9 +977,21 @@ switch($_GET['p']){
           </tr>';
         $totaal=0;
         
-        while($record=mysql_fetch_array($query)){
+        while($record=mysql_fetch_array($query))
+		{
+			if($record['bedrijfsnaam']!="")
+			{
+				$naam = substr($record['bedrijfsnaam'], 0, 40);
+			}else
+			{
+				$naam = substr($record['achternaam'], 0, 20);
+				$naam.= ', ' ;
+				$naam.= substr($record['voornaam'], 0, 20);
+			}
+			
             echo'<tr>
             <td>'.date(FACTUUR_DATUM_FORMAT,$record['datum']).'</td>
+			<td>'.$naam.'</td>
             <td>'.$record['naam'].': '.$record['opmerking'].'</td>
             <td>'.$record['aantal'].'</td>
             <td>'.$fact->displayMoney($record['verkoop_prijs']).'</td>
@@ -912,7 +1006,88 @@ switch($_GET['p']){
 			<td>Totaal ex btw: '.$fact->displayMoney($totaal).'</td>
 		  </tr>
 		</table>';
-
+		
+		///////////////////// DISPLAY ALL CURRENT SENDED STUFF THIS MONTH THAT IS MONTHLY
+        
+        $periode = 'Huidige maand verzonden';
+          
+        $time     = mktime(0,0,1,date("m"),date("d"),date("Y"));
+        
+        $query="SELECT k.artikelId, k.opmerking, k.aantal, f.klantId, a.naam, a.verkoop_prijs ,k.dag, k.maand, k.jaar, k.datum, cl.achternaam, cl.bedrijfsnaam, cl.voornaam 
+        FROM koppel_factuur_artikelen k, artikelen a, factuur f, klant cl
+        WHERE k.artikelId = a.artikelId
+        AND k.factuurId = f.factuurId
+		AND cl.klantId = f.klantId
+        AND a.periode = 'maand' AND
+        k.maand='".date("m",$time)."' AND
+        k.jaar='".date("Y",$time)."'
+        AND k.opgezegd = 'N'
+        AND k.artikelID
+        IN (  
+            
+        SELECT k.artikelId
+        FROM koppel_factuur_artikelen k
+        WHERE k.dag >0
+        AND k.dag <32
+        ) order by k.dag";
+		
+		$query     = mysql_query($query) or die (mysql_error());
+        if(mysql_num_rows($query)==0){
+            //$fact->error('Er zijn momenteel nog geen items die deze maand verlengd worden');
+        }
+        
+        echo '<table width="100%" border="0" cellspacing="0" cellpadding="1">';
+		
+		echo '<tr bgcolor="#CCCCCC">
+            <td class="big">Facturen reeds verzonden</td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td><table width="100%" border="0" cellspacing="0" cellpadding="1">
+          <tr>
+            <td><b>datum</b></td>
+			<td><b>Naam</b></td>
+            <td><b>te factureren object</b></td>
+            <td><b>aantal</b></td>
+            <td><b>per stuk</b></td>
+            <td><b>totaal</b></td>
+          </tr>';
+        $totaal=0;
+        
+        while($record=mysql_fetch_array($query)){
+		
+			if($record['bedrijfsnaam']!="")
+			{
+				$naam = substr($record['bedrijfsnaam'], 0, 40);
+			}else
+			{
+				$naam = substr($record['achternaam'], 0, 20);
+				$naam.= ', ' ;
+				$naam.= substr($record['voornaam'], 0, 20);
+			}
+            echo'<tr>
+            <td>'.date(FACTUUR_DATUM_FORMAT,$record['datum']).'</td>
+			<td>'.$naam.'</td>
+            <td>'.$record['naam'].': '.$record['opmerking'].'</td>
+            <td>'.$record['aantal'].'</td>
+            <td>'.$fact->displayMoney($record['verkoop_prijs']).'</td>
+            <td>'.$fact->displayMoney($record['verkoop_prijs']*$record['aantal']).'</td>
+          </tr>';
+            $totaal+=$record['verkoop_prijs']*$record['aantal'];
+        }
+          
+        echo '</table></td>
+        </tr>
+        <tr>
+          <td>Totaal ex btw: '.$fact->displayMoney($totaal).'</td>
+        </tr>
+        <tr>
+          <td>&nbsp;</td>
+        </tr>';
+        
+        ////////////////////////////////
     break;
 	
 	case "facturen":
@@ -932,7 +1107,9 @@ switch($_GET['p']){
 			<td>&nbsp;</td>
 		  </tr>';
 	
-		$query = "SELECT * FROM factuur WHERE betaald='N' ORDER BY factuurId DESC";
+		$query = "SELECT * FROM factuur f, klant k
+		WHERE f.klantId = k.klantId AND
+		betaald='N' ORDER BY factuurId DESC";
 		$query = mysql_query($query) or die (mysql_error());
 		
 		if(mysql_num_rows($query)==0){
@@ -944,6 +1121,7 @@ switch($_GET['p']){
 				<td><table width="100%" border="0" cellspacing="0" cellpadding="1">
 				<tr>
 				  <td><b>FactuurId</b></td>
+				  <td><b>Klant</b></td>
 				  <td><b>Betalings status</b></td>
 				  <td><b>Factuur datum</b></td>
 				  <td>&nbsp;</td>
@@ -958,8 +1136,19 @@ switch($_GET['p']){
 					$status = 'Openstaand';
 				}
 				
+				if($record['bedrijfsnaam']!="")
+				{
+					$naam = substr($record['bedrijfsnaam'], 0, 40);
+				}else
+				{
+					$naam = substr($record['achternaam'], 0, 20);
+					$naam.= ', ' ;
+					$naam.= substr($record['voornaam'], 0, 20);
+				}
+				
 				echo '<tr>
 				  <td><a href="index.php?p=display_factuur&factuurId='.$record['factuurId'].'">'.$record['factuurId'].'</a></td>
+				  <td>'.$naam.'</td>
 				  <td>'.$status.'</td>
 				  <td>'.date(FACTUUR_DATUM_FORMAT,$record['datum']).'</td>
 				  <td>[<a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'">edit</a>]
@@ -971,9 +1160,25 @@ switch($_GET['p']){
 			  </tr>';
 		}
 		
-		$query = "SELECT SUM( bedrag ) AS openstaand FROM `factuur` WHERE betaald = 'c'";
-        $query = mysql_query($query) or die (mysql_error());
-        $record=mysql_fetch_array($query);
+		$query = "SELECT SUM( bedrag ) AS openstaand FROM `factuur` WHERE betaald = 'C'";
+		$query = mysql_query($query) or die (mysql_error());
+		$record=mysql_fetch_array($query);
+		
+		$query19 = "SELECT SUM( bedrag ) AS openstaand
+		FROM factuur f, klant k
+		WHERE f.klantId = k.klantId AND
+		f.betaald = 'C' AND
+		k.BTWtarrief = '19.0';";
+		$query19 = mysql_query($query19) or die (mysql_error());
+		$record19=mysql_fetch_array($query19);
+                        
+		$query10 = "SELECT SUM( bedrag ) AS openstaand
+		FROM factuur f, klant k
+		WHERE f.klantId = k.klantId AND
+		f.betaald = 'C' AND
+		k.BTWtarrief = '0.0';";
+		$query10 = mysql_query($query10) or die (mysql_error());
+		$record10=mysql_fetch_array($query10);
 		
 		if(mysql_num_rows($query)==1)
         {
@@ -981,7 +1186,8 @@ switch($_GET['p']){
             <td>&nbsp;</td>
           </tr>
           <tr bgcolor="#CCCCCC">
-            <td class="big">Nog te voldoen: '.$fact->displayMoney($record['openstaand']).'</td>
+            <td class="big">Nog te voldoen: 19%: '.$fact->displayMoney($record19['openstaand']).' 0%: '.$fact->displayMoney($record10['openstaand']).'
+	    totaal: '.$fact->displayMoney($record['openstaand']).'</td>
           </tr>
           <tr>
             <td>&nbsp;</td>
@@ -999,7 +1205,9 @@ switch($_GET['p']){
 			  </tr>';
 		}
 	
-		$query = "SELECT * FROM factuur WHERE betaald='C' ORDER BY factuurId DESC";
+		$query = "SELECT * FROM factuur f, klant k
+		WHERE f.klantId = k.klantId AND
+		betaald='C' ORDER BY factuurId DESC";
 		$query = mysql_query($query) or die (mysql_error());
 		
 		if(mysql_num_rows($query)==0){
@@ -1011,14 +1219,29 @@ switch($_GET['p']){
 				<td><table width="100%" border="0" cellspacing="0" cellpadding="1">
 				<tr>
 				  <td><b>FactuurId</b></td>
+				  <td><b>Klant</b></td>
 				  <td><b>Betalings status</b></td>
 				  <td><b>Factuur datum</b></td>
-				  <td><b>Bedrag</b></td>
+				  <td><b>Incl. btw</b></td>
+                  <td><b>Excl. btw</b></td>
+                  <td><b>BTW</b></td>
 				  <td width="15%">&nbsp;</td>
 				</tr>';
 			
 			while($record=mysql_fetch_array($query)){
+				$excl = $record['bedrag']/(($record['BTWtarrief']/100)+1);
+				$btw = $record['bedrag']-$excl;
 				$time = mktime(date('H',$record['datum']),date('i',$record['datum']),date('s',$record['datum']),date('m',$record['datum']),date('d',$record['datum'])+BETALINGS_TERMIJN,date('Y',$record['datum']));
+				
+				if($record['bedrijfsnaam']!="")
+				{
+					$naam = substr($record['bedrijfsnaam'], 0, 40);
+				}else
+				{
+					$naam = substr($record['achternaam'], 0, 20);
+					$naam.= ', ' ;
+					$naam.= substr($record['voornaam'], 0, 20);
+				}
 				
 				if($time<time()){
 					$status = 'Over tijd, openstaand';
@@ -1028,9 +1251,12 @@ switch($_GET['p']){
 				
 				echo '<tr>
 				  <td><a href="index.php?p=display_factuur&factuurId='.$record['factuurId'].'">'.$record['factuurId'].'</a></td>
+				  <td>'.$naam.'</td>
 				  <td>'.$status.'</td>
 				  <td>'.date('d/m/Y',$record['datum']).'</td>
 				  <td>'.$fact->displayMoney($record['bedrag']).'</td>
+				  <td>'.$fact->displayMoney($excl).'</td>
+				  <td>'.$fact->displayMoney($btw).'</td>
 				  <td>[<a href="index.php?p=factuur_resend&factuurId='.$record['factuurId'].'">resend factuur</a>] [<a href="index.php?p=factuur_betaal&factuurId='.$record['factuurId'].'">betaald</a>] [<a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'">edit</a>]</td>
 				</tr>';
 			}
@@ -1038,6 +1264,24 @@ switch($_GET['p']){
 			echo '</table></td>
 			  </tr>';
 		}
+		
+		$query19 = "SELECT SUM( bedrag ) AS voldaan
+        FROM factuur f, klant k
+        WHERE f.klantId = k.klantId AND
+        f.betaald = 'Y' AND
+        datum >= '".$fact->vorige_kwartaaldatum()."' AND
+        k.BTWtarrief = '19.0';";
+        $query19 = mysql_query($query19) or die (mysql_error());
+        $record19=mysql_fetch_array($query19);
+            
+        $query10 = "SELECT SUM( bedrag ) AS voldaan
+        FROM factuur f, klant k
+        WHERE f.klantId = k.klantId AND
+        f.betaald = 'Y' AND
+        datum >= '".$fact->vorige_kwartaaldatum()."' AND
+        k.BTWtarrief = '0.0';";
+        $query10 = mysql_query($query10) or die (mysql_error());
+        $record10=mysql_fetch_array($query10);
 		
 		$query = "SELECT SUM( bedrag ) AS voldaan FROM `factuur` WHERE betaald = 'Y' AND datum >= '".$fact->vorige_kwartaaldatum()."'";
         $query = mysql_query($query) or die (mysql_error());
@@ -1049,7 +1293,8 @@ switch($_GET['p']){
 	            <td>&nbsp;</td>
 	          </tr>
 	          <tr bgcolor="#CCCCCC">
-	            <td class="big">Voldaan: '.$fact->displayMoney($record[voldaan]).'</td>
+	            <td class="big">Voldaan dit kwartaal: 19%: '.$fact->displayMoney($record19['voldaan']).' 0%: '.$fact->displayMoney($record10['voldaan']).'
+		    totaal: '.$fact->displayMoney($record['voldaan']).'</td>
 	          </tr>
 	          <tr>
 	            <td>&nbsp;</td>
@@ -1067,7 +1312,10 @@ switch($_GET['p']){
 			  </tr>';
 		}
 		
-		$query 	= "SELECT * FROM factuur WHERE betaald='Y' AND datum >= '".$fact->vorige_kwartaaldatum()."' ORDER BY factuurId DESC";
+		$query 	= "SELECT factuurId, betaald_datum, datum, bedrag, BTWtarrief, bedrijfsnaam, achternaam
+		FROM factuur f, klant k
+		WHERE f.klantId=k.klantId AND
+		betaald='Y' AND datum >= '".$fact->vorige_kwartaaldatum()."' ORDER BY factuurId DESC";
 		$query 	= mysql_query($query) or die (mysql_error());
 		if(mysql_num_rows($query)==0){
 			echo '<tr>
@@ -1078,18 +1326,37 @@ switch($_GET['p']){
 				<td><table width="100%" border="0" cellspacing="0" cellpadding="1">
 				<tr>
 				  <td><b>FactuurId</b></td>
+				  <td><b>Klant</b></td>
 				  <td><b>Betalings status</b></td>
 				  <td><b>Factuur datum</b></td>
-				  <td><b>Bedrag</b></td>
+				  <td><b>Incl. btw</b></td>
+				  <td><b>Excl. btw</b></td>
+				  <td><b>BTW</b></td>
 				  <td>&nbsp;</td>
 				</tr>';
 			
-			while($record=mysql_fetch_array($query)){				
+			while($record=mysql_fetch_array($query)){
+				$excl = $record['bedrag']/(($record['BTWtarrief']/100)+1);
+				$btw = $record['bedrag']-$excl;
+				
+				if($record['bedrijfsnaam']!="")
+				{
+					$naam = substr($record['bedrijfsnaam'], 0, 40);
+				}else
+				{
+					$naam = substr($record['achternaam'], 0, 20);
+					$naam.= ', ' ;
+					$naam.= substr($record['voornaam'], 0, 20);
+				}
+				
 				echo '<tr>
 				  <td><a href="index.php?p=display_factuur&factuurId='.$record['factuurId'].'">'.$record['factuurId'].'</a></td>
+				  <td>'.$naam.'</td>
 				  <td>Voldaan op '.date('d/m/Y',$record['betaald_datum']).'</td>
 				  <td>'.date('d/m/Y',$record['datum']).'</td>
 				  <td>'.$fact->DisplayMoney($record['bedrag']).'</td>
+				  <td>'.$fact->DisplayMoney($excl).'</td>
+				  <td>'.$fact->DisplayMoney($btw).'</td>
 				  <td>[<a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'">edit</a>]</td>
 				</tr>';
 			}
@@ -1114,6 +1381,24 @@ switch($_GET['p']){
 		$query = "SELECT SUM( bedrag ) AS voldaan FROM `factuur` WHERE betaald = 'Y' AND datum BETWEEN '".$fact->vorige_kwartaaldatum(3)."' AND '".$fact->vorige_kwartaaldatum()."'";
         $query = mysql_query($query) or die (mysql_error());
         $record=mysql_fetch_array($query);
+
+		$query19 = "SELECT SUM( bedrag ) AS voldaan
+		FROM factuur f, klant k
+		WHERE f.klantId = k.klantId AND
+		f.betaald = 'Y' AND
+		datum BETWEEN '".$fact->vorige_kwartaaldatum(3)."' AND '".$fact->vorige_kwartaaldatum()."' AND
+		k.BTWtarrief = '19.0';";
+		$query19 = mysql_query($query19) or die (mysql_error());
+       	$record19=mysql_fetch_array($query19);
+
+		$query10 = "SELECT SUM( bedrag ) AS voldaan
+        FROM factuur f, klant k
+        WHERE f.klantId = k.klantId AND
+        f.betaald = 'Y' AND
+        datum BETWEEN '".$fact->vorige_kwartaaldatum(3)."' AND '".$fact->vorige_kwartaaldatum()."' AND
+        k.BTWtarrief = '0.0';";
+        $query10 = mysql_query($query10) or die (mysql_error());
+        $record10=mysql_fetch_array($query10);
 		
 		if(mysql_num_rows($query)==1)
         {
@@ -1121,7 +1406,8 @@ switch($_GET['p']){
 	            <td>&nbsp;</td>
 	          </tr>
 	          <tr bgcolor="#CCCCCC">
-	            <td class="big">Voldaan dit kwartaal: '.$fact->displayMoney($record[voldaan]).'</td>
+	            <td class="big">Voldaan dit kwartaal: 19%: '.$fact->displayMoney($record19['voldaan']).'
+		    0%: '.$fact->displayMoney($record10['voldaan']).' totaal: '.$fact->displayMoney($record['voldaan']).'</td>
 	          </tr>
 	          <tr>
 	            <td>&nbsp;</td>
@@ -1139,7 +1425,10 @@ switch($_GET['p']){
 			  </tr>';
 		}
 		
-		$query 	= "SELECT * FROM factuur WHERE betaald='Y' AND datum BETWEEN '".$fact->vorige_kwartaaldatum(3)."' AND '".$fact->vorige_kwartaaldatum()."' ORDER BY factuurId DESC";
+		$query 	= "SELECT factuurId, betaald_datum, datum, bedrag, BTWtarrief, bedrijfsnaam, achternaam, voornaam
+		FROM factuur f, klant k
+		WHERE f.klantId=k.klantId AND
+		betaald='Y' AND datum BETWEEN '".$fact->vorige_kwartaaldatum(3)."' AND '".$fact->vorige_kwartaaldatum()."' ORDER BY factuurId DESC";
 		$query 	= mysql_query($query) or die (mysql_error());
 		if(mysql_num_rows($query)==0){
 			echo '<tr>
@@ -1147,21 +1436,40 @@ switch($_GET['p']){
 			  </tr>';
 		}else{
 			echo '<tr>
-				<td><table width="100%" border="0" cellspacing="0" cellpadding="1">
-				<tr>
-				  <td><b>FactuurId</b></td>
-				  <td><b>Betalings status</b></td>
-				  <td><b>Factuur datum</b></td>
-				  <td><b>Bedrag</b></td>
-				  <td>&nbsp;</td>
-				</tr>';
+			<td><table width="100%" border="0" cellspacing="0" cellpadding="1">
+			<tr>
+			  <td><b>FactuurId</b></td>
+			  <td><b>Naam</b></td>
+			  <td><b>Betalings status</b></td>
+			  <td><b>Factuur datum</b></td>
+			  <td><b>Incl. btw</b></td>
+			  <td><b>Excl. btw</b></td>
+			  <td><b>BTW</b></td>
+			  <td>&nbsp;</td>
+			</tr>';
 			
-			while($record=mysql_fetch_array($query)){				
+			while($record=mysql_fetch_array($query)){
+				$excl = $record['bedrag']/(($record['BTWtarrief']/100)+1);
+				$btw = $record['bedrag']-$excl;
+				
+				if($record['bedrijfsnaam']!="")
+				{
+					$naam = substr($record['bedrijfsnaam'], 0, 40);
+				}else
+				{
+					$naam = substr($record['achternaam'], 0, 20);
+					$naam.= ', ' ;
+					$naam.= substr($record['voornaam'], 0, 20);
+				}								
+				
 				echo '<tr>
 				  <td><a href="index.php?p=display_factuur&factuurId='.$record['factuurId'].'">'.$record['factuurId'].'</a></td>
+				  <td>'.$naam.'</td>
 				  <td>Voldaan op '.date('d/m/Y',$record['betaald_datum']).'</td>
 				  <td>'.date('d/m/Y',$record['datum']).'</td>
 				  <td>'.$fact->DisplayMoney($record['bedrag']).'</td>
+				  <td>'.$fact->DisplayMoney($excl).'</td>
+				  <td>'.$fact->DisplayMoney($btw).'</td>
 				  <td>[<a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'">edit</a>]</td>
 				</tr>';
 			}
@@ -1183,21 +1491,38 @@ switch($_GET['p']){
 		  </tr>';
 		
 		$query = "SELECT SUM( bedrag ) AS voldaan FROM `factuur` WHERE betaald = 'Y'";
-        $query = mysql_query($query) or die (mysql_error());
-        $record=mysql_fetch_array($query);
-		
+		$query = mysql_query($query) or die (mysql_error());
+		$record=mysql_fetch_array($query);
+							
+		$query19 = "SELECT SUM( bedrag ) AS openstaand
+		FROM factuur f, klant k
+		WHERE f.klantId = k.klantId AND
+		f.betaald = 'Y' AND
+		k.BTWtarrief = '19.0';";
+		$query19 = mysql_query($query19) or die (mysql_error());
+		$record19=mysql_fetch_array($query19);
+						  
+		$query10 = "SELECT SUM( bedrag ) AS openstaand
+		FROM factuur f, klant k
+		WHERE f.klantId = k.klantId AND
+		f.betaald = 'Y' AND
+		k.BTWtarrief = '0.0';";
+		$query10 = mysql_query($query10) or die (mysql_error());
+		$record10=mysql_fetch_array($query10);
+				  
 		if(mysql_num_rows($query)==1)
-        {
-	        echo '<tr>
-	            <td>&nbsp;</td>
-	          </tr>
-	          <tr bgcolor="#CCCCCC">
-	            <td class="big">Voldaan: '.$fact->displayMoney($record['voldaan']).'</td>
-	          </tr>
+		{       
+			echo'<tr>
+			<td>&nbsp;</td>
+          	  </tr>
+          	  <tr bgcolor="#CCCCCC">
+              <td class="big">Voldaan: 19%: '.$fact->displayMoney($record19['openstaand']).' 0%: '.$fact->displayMoney($record10['openstaand']).'
+              totaal: '.$fact->displayMoney($record['openstaand']).'</td>
+			  </tr>
 	          <tr>
 	            <td>&nbsp;</td>
 	          </tr>';
-        }else
+        	}else
 		{	
 			echo '<tr>
 				<td>&nbsp;</td>
@@ -1210,7 +1535,10 @@ switch($_GET['p']){
 			  </tr>';
 		}
 		
-		$query 	= "SELECT * FROM factuur WHERE betaald='Y' ORDER BY factuurId DESC";
+		$query 	= "SELECT factuurId, betaald_datum, datum, bedrag, BTWtarrief, bedrijfsnaam, voornaam, achternaam
+		FROM factuur f, klant k
+		WHERE f.klantId=k.klantId AND
+		betaald='Y' ORDER BY factuurId DESC";
 		$query 	= mysql_query($query) or die (mysql_error());
 		if(mysql_num_rows($query)==0){
 			echo '<tr>
@@ -1218,23 +1546,43 @@ switch($_GET['p']){
 			  </tr>';
 		}else{
 			echo '<tr>
-				<td><table width="100%" border="0" cellspacing="0" cellpadding="1">
-				<tr>
-				  <td><b>FactuurId</b></td>
-				  <td><b>Betalings status</b></td>
-				  <td><b>Factuur datum</b></td>
-				  <td><b>Bedrag</b></td>
-				  <td>&nbsp;</td>
-				</tr>';
-			
-			while($record=mysql_fetch_array($query)){				
-				echo '<tr>
-				  <td><a href="index.php?p=display_factuur&factuurId='.$record['factuurId'].'">'.$record['factuurId'].'</a></td>
-				  <td>Voldaan op '.date('d/m/Y',$record['betaald_datum']).'</td>
-				  <td>'.date('d/m/Y',$record['datum']).'</td>
-				  <td>'.$fact->DisplayMoney($record['bedrag']).'</td>
-				  <td>[<a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'">edit</a>]</td>
-				</tr>';
+			<td><table width="100%" border="0" cellspacing="0" cellpadding="1">
+			<tr>
+			  <td><b>FactuurId</b></td>
+			  <td><b>Naam</b></td>
+			  <td><b>Betalings status</b></td>
+			  <td><b>Factuur datum</b></td>
+			  <td><b>Incl. btw</b></td>
+			  <td><b>Excl. btw</b></td>
+			  <td><b>BTW</b></td>
+			  <td>&nbsp;</td>
+			</tr>';
+        
+			while($record=mysql_fetch_array($query)){
+					$excl = $record['bedrag']/(($record['BTWtarrief']/100)+1);
+					$btw = $record['bedrag']-$excl;
+					
+					if($record['bedrijfsnaam']!="")
+					{
+						$naam = substr($record['bedrijfsnaam'], 0, 40);
+					}
+					else
+					{
+						$naam = substr($record['achternaam'], 0, 20);
+						$naam.= ', ' ;
+						$naam.= substr($record['voornaam'], 0, 20);
+					}
+		
+					echo '<tr>
+					  <td><a href="index.php?p=display_factuur&factuurId='.$record['factuurId'].'">'.$record['factuurId'].'</a></td>
+					  <td>'.$naam.'</td>
+					  <td>Voldaan op '.date('d/m/Y',$record['betaald_datum']).'</td>
+					  <td>'.date('d/m/Y',$record['datum']).'</td>
+					  <td>'.$fact->DisplayMoney($record['bedrag']).'</td>
+					  <td>'.$fact->DisplayMoney($excl).'</td>
+					  <td>'.$fact->DisplayMoney($btw).'</td>
+					  <td>[<a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'">edit</a>]</td>
+					</tr>';
 			}
 			
 			echo '</table><br />
@@ -2223,7 +2571,9 @@ switch($_GET['p']){
 }
 
 if($_GET['p']!='finish_factuur' &&
-$_GET['p']!='json_artikelen_per_cat'){ // AND $_GET['p']!='display_factuur'
+$_GET['p']!='' &&
+$_GET['p']!='json_artikelen_per_cat' &&
+$_GET['p']!='display_factuur') {
 	include_once('templates/footer.tpl.php');
 }
 ?>
