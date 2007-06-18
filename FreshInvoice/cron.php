@@ -23,5 +23,8 @@ if(date('d')=='1'){
 
 $fact->factuur_creator('N');
 
-$fact->late_facturen_notificatie();
+if(date('D')=='Mon')
+{
+	$fact->late_facturen_notificatie();
+}
 ?>
