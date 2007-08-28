@@ -748,9 +748,9 @@ class factuur {
 			echo'<table width="100%" border="0" cellspacing="0" cellpadding="1">
 			  <tr bgcolor="#CCCCCC">
 				<td class="big">Factuursysteem</td>
-				<td align="right"><a href="index.php" class="bold">login</a> |
-				<a href="index.php?p=nieuwe_klant" class="bold">klant worden</a> |
-				<a href="index.php?p=forgotmypass" class="bold">wachtwoord vergeten</a></td>
+				<td align="right"><a href="index.php" target="mainFrame" class="bold">login</a> |
+				<a href="index.php?p=nieuwe_klant" target="mainFrame" class="bold">klant worden</a> |
+				<a href="index.php?p=forgotmypass" target="mainFrame" class="bold">wachtwoord vergeten</a></td>
 			  </tr>
 			</table>';
 		}else{
