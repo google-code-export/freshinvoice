@@ -1,6 +1,6 @@
 <?
 include_once('config.inc.php');
-include_once(PATH.'includes/factuur.class.php');
+include_once('factuur.class.php');
 
 /* MAKE THE INVOICES WITHOUT SENDING THE REMINDER MAILS */
 

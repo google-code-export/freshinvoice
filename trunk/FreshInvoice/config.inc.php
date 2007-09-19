@@ -6,6 +6,7 @@ define("MAILADDR",		"sales@example.org");
 define("FROMNAME",		"Henk Smits");
 define("BEDRIJFSNAAM",	"Example.org");
 define("AFSLUITING",	"Met vriendelijke groet,\n\nHenk Smits\nExample.org");
+define("INVOICEPREPEND","FRE"); // INVOICE NUMBER WILL BE FRE1001 OR ABC1001
 define("DB_HOSTNAME", 	"localhost"); // LIKE localhost OR 192.168.1.2
 define("DB_USERNAME", 	"username"); // LIKE freshinvoice OR adminstration
 define("DB_PASSWORD", 	"password"); // LIKE ds8J2xj7
@@ -20,8 +21,8 @@ if(MAILER=='smtp'){
 ini_set("include_path", ".:".PATH);
 
 // OPTIES
-define("BETALINGS_TERMIJN", 					"10"); // DAGEN
-define("BETALINGS_NOTIFICATIE", 				"8"); // DAGEN
+define("BETALINGS_TERMIJN", 					"14"); // DAGEN
+define("BETALINGS_NOTIFICATIE", 				"20"); // DAGEN
 
 // DESIGN OPTIES
 define("LENGTE_KLANTEN_SELECT_BOX", 			"20");
@@ -35,7 +36,7 @@ define("FACTUUR_LOGO", 			'<a href="http://www.freshway.biz"><img src="http://ww
 define("FACTUUR_DATUM_FORMAT",  'd/m/Y'); //www.php.net/date
 define("VERSION", '1.1.4');
 
-$btwTarrieven	= array('19.0','0.0');
+$btwTarrieven	= array('19.0','20.0','0.0');
 
 $KVKplaatsen	= array(
 'Amsterdam',

@@ -295,7 +295,7 @@ switch($_GET['p']){
 			  <tr>
 				<td colspan="2">Welkom als nieuwe klant bij '.BEDRIJFSNAAM.',<br>
 				  <br>
-				  Op het door uw opgegeven e-mail adres vindt u uw login gegevens. Daarmee kunt u <a href="index.php">hier</a> inloggen.<br>
+				  Op het door uw opgegeven e-mail adres vindt u uw login gegevens. Daarmee kunt u <a href="index.php?p=login" target="mainFrame">hier</a> inloggen.<br>
 				  <br>'.nl2br(AFSLUITING).'
 				  </td>
 			  </tr>
@@ -750,7 +750,7 @@ switch($_GET['p']){
 		  <tr>
 		    <td>Uw versie is: '.VERSION.'<br />
 		    De nieuwste versie is: '.$current.'<br /><br />
-		    U vind de laatste versie via de volgende url: <a href="http://code.google.com/p/freshinvoice/" target="_blank">http://code.google.com/p/freshinvoice/</a></td>
+		    U vind de laatste versie via de volgende url: <a href="http://freshmeat.net/projects/freshinvoice/" target="_blank">http://freshmeat.net/projects/freshinvoice/</a></td>
 		  </tr>
 	</table>';
 	
@@ -1145,7 +1145,9 @@ switch($_GET['p']){
 				  <td>'.$status.'</td>
 				  <td>'.date(FACTUUR_DATUM_FORMAT,$record['datum']).'</td>
 				  <td>[<a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'">edit</a>]
-				  [<a href="index.php?p=factuur_delete&factuurId='.$record['factuurId'].'">delete</a>]</td>
+				  [<a href="index.php?p=factuur_delete&factuurId='.$record['factuurId'].'">delete</a>]
+				  [<a href="index.php?p=factuur_sendnow&factuurId='.$record['factuurId'].'">verzend factuur</a>]
+				  </td>
 				</tr>';
 			}
 			
@@ -1584,6 +1586,27 @@ switch($_GET['p']){
 		}
 		
 		echo '</table>';
+	break;
+
+	case "factuur_sendnow":
+		$fact->notAllowed('99');
+		
+		if($fact->sendnow_factuur($_GET['factuurId'])){
+			echo '<table width="100%" border="0" cellspacing="0" cellpadding="1">
+			  <tr>
+				<td width="50%">Factuur verzonden</td>
+				<td align="right">&nbsp;</td>
+			  </tr>
+			  <tr>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			  </tr>
+			  <tr>
+				<td colspan="2">De factuur is verzonden.<br /><br />
+				Klik <a href="index.php?p=facturen">hier</a> om naar het overzicht van de facturen terug te gaan.</td>
+			  </tr>
+			</table>';
+		}
 	break;
 	
 	case "factuur_resend":
@@ -2282,10 +2305,11 @@ switch($_GET['p']){
 	case "incasso_overzicht":
 		$fact->notAllowed('99');
 		
-		$query = "SELECT k.bedrijfsnaam, k.voornaam, k.achternaam, f.klantId, SUM(bedrag) as totaal, k.mail, k.telefoon
+		$query = "SELECT k.bedrijfsnaam, k.voornaam, k.achternaam, k.tussenvoegsel, f.klantId, count(f.klantId) as aantalfacturen, SUM(bedrag) as totaal, k.mail, k.telefoon
 		FROM factuur f, klant k
-		WHERE betaald ='c' and k.klantId = f.klantId
+		WHERE betaald = 'c' and k.klantId = f.klantId
 		GROUP BY f.klantId
+		HAVING count(f.klantId) > 2
 		ORDER BY totaal DESC";
 		$query = mysql_query($query) or die (mysql_error());
 		
@@ -2298,20 +2322,24 @@ switch($_GET['p']){
 		  <td><b>Bedrijfsnaam</b></td>
 		  <td><b>Voornaam</b></td>
 		  <td><b>Achternaam</b></td>
-		  <td><b>klantId</b></td>
-		  <td><b>Totaal</b></td>
+		  <td><b>Clientcode</b></td>
+		  <td><b>Facturen</b></td>
+		  <td><b>Bedrag</b></td>
 		  <td><b>E-mail</b></td>
 		  <td><b>Telefoon</b></td>
 		</tr>';
 		
 		while($record = mysql_fetch_array($query))
 		{
+		    if (!$record['bedrijfsnaam']) {$record['bedrijfsnaam'] = '<i>nvt - individu<i/>'; }
+		
 			echo '<tr>
-		  	  <td>'.$record['bedrijfsnaam'].'</td>
+		  	  <td><a href="index.php?p=factuurklant&klantId='.$record['klantId'].'">'.$record['bedrijfsnaam'].'</a></td>
 		  	  <td>'.$record['voornaam'].'</td>
-		  	  <td>'.$record['achternaam'].'</td>
-		  	  <td>'.$record['klantId'].'</td>
-		  	  <td>'.$record['totaal'].'</td>
+		  	  <td>'.$record['achternaam'].' '.$record['tussenvoegsel'].'</td>
+	  	  	  <td><a href="index.php?p=persoonsgegevens&klantId='.$record['klantId'].'">'.$record['klantId'].'</a></td>  
+			  <td>'.$record['aantalfacturen'].'</td>
+		  	  <td>'.$fact->displayMoney($record['totaal']).'</td>
 		  	  <td>'.$record['mail'].'</td>
 		  	  <td>'.$record['telefoon'].'</td>
 			</tr>';
@@ -2529,10 +2557,10 @@ switch($_GET['p']){
 	
 	case "json_artikelen_per_cat":
 		$return = array();
-		$query = "SELECT artikelId, naam FROM artikelen WHERE catId='".$_GET['catId']."' ORDER BY naam;";
+		$query = "SELECT artikelId, naam, verkoop_prijs FROM artikelen WHERE catId='".$_GET['catId']."' ORDER BY naam;";
 		$query = mysql_query($query) or die (mysql_error());
 		while($record=mysql_fetch_array($query)){
-			$return[] = array('artikelId' => $record['artikelId'], 'naam' => $record['naam']);
+			$return[] = array('artikelId' => $record['artikelId'], 'naam' => $record['naam']. ' ' .$fact->displayMoneySelect($record['verkoop_prijs']));
 		}
 		
 		$json = new Services_JSON();
@@ -2554,19 +2582,53 @@ switch($_GET['p']){
 			  <tr>
 				<td colspan="2">Tot ziens. U wordt nu terug naar de index geleid.
 				<script language="javascript">
-				setTimeout("parent.window.location.href=\'index.php\'", 4000);
+				setTimeout("parent.window.location.href=\'index.php\'", 1000);
 				</script></td>
 			  </tr>
 			</table>';
 		}
 	
 	break;
-}
 
-if($_GET['p']!='finish_factuur' &&
-$_GET['p']!='' &&
-$_GET['p']!='json_artikelen_per_cat' &&
-$_GET['p']!='display_factuur') {
-	include_once('templates/footer.tpl.php');
+	case "factuurklant":
+	
+	if(!$_GET['klantId'])
+	{
+		echo '<table>
+                <tr>
+                  <td><b>Klantnaam</b></td>
+                </tr>';		
+
+		$query = mysql_query("SELECT * FROM klant"); 
+		include_once('templates/footer.tpl.php');
+		while ($record = mysql_fetch_array($query))
+		{
+			echo '<tr>
+       			   <td><a href="index.php?p=factuurklant&klantId='.$record['klantId'].'">'.$record['voornaam'].' '.$record['tussenvoegsel'].' '.$record['achternaam'].'</a></td>
+        		</tr>';
+	 	}
+	} else {
+		echo '<table>
+		<tr>
+        	  <td><b>Factuurnummer</b></td>
+        	  <td><b>Datum</b></td>
+        	  <td><b>Verloopdatum</b></td>
+        	  <td><b>Bedrag</b></td>
+        	</tr>';
+		
+		$query = mysql_query("SELECT factuurId, bedrag, datum FROM factuur WHERE klantId = '".$_GET['klantId']."' AND betaald='C'");
+		while ($record = mysql_fetch_array($query))
+		{
+			echo '<tr>
+                           <td><a href="index.php?p=display_factuur&factuurId='.$record['factuurId'].'">'.$record['factuurId'].'</a></td>
+                           <td>'.date("d-m-Y", $record['datum']).'</td>
+                           <td>'.date("d-m-Y", mktime(0,0,0,date("m",$record['datum']),date("d",$record['datum'])+BETALINGS_TERMIJN,date("Y",$record['datum']))).'</td>
+                           <td>'.$fact->displayMoney($record['bedrag']).'</td>
+                        </tr>';
+	 	}
+	}
+
+		echo '</table>';
+	break;
 }
 ?>
