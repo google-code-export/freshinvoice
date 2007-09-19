@@ -451,6 +451,11 @@ class factuur {
 		}
 	}
 	
+	function sendnow_factuur ($factuurId){
+		$this->resend_factuur($factuurId);
+		return TRUE;
+	}	
+	
 	function resend_factuur ($factuurId){
 		$content = $this->finish_factuur($factuurId, 'WRITE');
 		$this->mail_factuur($factuurId,$content,'RESEND');
@@ -696,6 +701,23 @@ class factuur {
 			return '&euro; '.$return;
 		}else{
 			return '&euro; '.$kosten.",00";
+		}
+	}
+	
+	function DisplayMoneySelect ($kosten){
+		$kosten = round($kosten,2);
+		
+		if(ereg('[.]',$kosten)){	
+			$explKosten = explode('.',$kosten);
+	
+			if(strlen($explKosten[1])<2){
+				$explKosten[1] .= '0';
+			}
+			$return = $explKosten[0].",".$explKosten[1];
+	
+			return ' [ '.$return. ' ] ';
+		}else{
+			return ' [ '.$kosten.",00" . ' ] ';
 		}
 	}
 	
