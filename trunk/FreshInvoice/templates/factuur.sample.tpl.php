@@ -23,32 +23,36 @@ body {
     <td width="27%" valign="top"><table width="100%"  border="0" cellspacing="0" cellpadding="0">
         <tr>
           <td width="35%">Factuurnummer:</td>
-          <td>{#FACTUURID#}</td>
+          <td>{#INVOICEPREPEND#}{#FACTUURID#}</td>
         </tr>
         <tr>
           <td>Datum:</td>
           <td>{#FACTUURDATUM#}</td>
         </tr>
         <tr>
+          <td>Uiterste betaaldatum:</td>
+          <td>{#INVOICEEXPIREDATE#}</td>
+        </tr>
+        <tr>
           <td>Klantnummer:</td>
           <td>{#KLANTID#}</td>
         </tr>
     </table><br />
-    ABN Amro te Zwolle<br />
-    <strong>55.39.68.750</strong><br />
+    ABN Amro te Amsterdam<br />
+    <strong>11.11.11.111</strong><br />
     BIC ABNANL2A<br />
-    IBAN NL74ABNA0553968750</td>
+    IBAN NL74ABNA05111111111</td>
     <td width="45%" valign="top">&nbsp;</td>
     <td width="28%" valign="top"><table width="100%"  border="0" cellspacing="0" cellpadding="0">
         <tr align="right">
-          <td valign="top">Freshway Innovations<br />
-            Mr. P.J. Oudlaan 71<br />
-            8014 ZS Zwolle<br /><br />
-            KvK nummer: 5074671 te Zwolle<br />
-            BTW nummer: NL1055.44.735.B01<br />
-			tel. 0031 (0)6 11 00 65 37<br />
-			fax  0031 (0)84 83 29 591<br />
-      		e-mail. a.vermeer@freshway.biz</td>
+          <td valign="top">Sample business<br />
+            Random address 21<br />
+            1111 AB Amsterdam<br /><br />
+            KvK nummer: 1111111 te Amsterdam<br />
+            BTW nummer: NL0000.00.000.B01<br />
+			tel. 0031 (0)6 11 11 11 11<br />
+			fax  0031 (0)84 11 11 111<br />
+      		e-mail. info@example.com</td>
         </tr>
         </table></td>
   </tr>

@@ -1,17 +1,31 @@
 <html>
 <head>
-<title>FreshInvoice van FreshWay Innovations</title>
+  <title>FreshInvoice</title>
 </head>
-<body>
 
-<form action="http://www.imailings.biz/aanafmelden.php" method="GET" target="_blank">
-<input type="hidden" name="klantId" value="1"><input type="hidden" name="mailinglistId" value="1">
-<input type="hidden" name="method" value="javascript">
-<input type="text" name="mail" value="uw@emailadres.nl" onclick="if(this.form.mail.value=='uw@emailadres.nl'){this.form.mail.value='';}"><br />
-aanmelden <input type="radio" name="actie" value="aanmelden" /><br />
-afmelden <input type="radio" name="actie" value="afmelden" /><br />
-<input type="submit" name="submit" value="Go!" class="buttongo">
-</form>
+<body>
+  <center>
+    <h1><a href="http://demo.freshinvoice.com">Demo</a></h1>
+    <p>Admin login: demo@freshinvoice.com<br />Password: demo</p>
+
+    <p>User login: demouser@freshinvoice.com<br />Password: demo</p>
+    <hr>
+    <h1><a href="http://code.google.com/p/freshinvoice/">Project page</a></h1>
+    <a href="http://code.google.com/p/freshinvoice/issues/list">issues / feature requests</a> | 
+    <a href="http://code.google.com/p/freshinvoice/source">source code</a> | 
+    <a href="http://www.freshway.biz">FreshWay Innovations</a>
+    
+    <hr>
+    <h1>Mailinglist</h1>
+    <form action="http://www.imailings.nl/aanafmelden.php" method="GET" target="_blank">
+	<input type="hidden" name="klantId" value="1"><input type="hidden" name="mailinglistId" value="1">
+	<input type="hidden" name="method" value="javascript">
+	<input type="text" name="mail" value="uw@emailadres.nl" onclick="if(this.form.mail.value=='uw@emailadres.nl'){this.form.mail.value='';}"><br />
+	subscribe <input type="radio" name="actie" value="aanmelden" /><br />
+	unsubscribe <input type="radio" name="actie" value="afmelden" /><br />
+	<input type="submit" name="submit" value="submit" class="buttongo">
+	</form>
+  </center>
 
 </body>
 </html>
