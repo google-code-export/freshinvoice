@@ -372,6 +372,9 @@ switch($_GET['p']){
 				<td><a href="index.php?p=facturen" target="mainFrame">facturen</a></td>
 			  </tr>
 			  <tr>
+				<td><a href="index.php?p=paymentprocessor" target="mainFrame">payment processor</a></td>
+			  </tr>
+			  <tr>
 				<td><a href="index.php?p=incasso_overzicht" target="mainFrame">incasso overzicht</a></td>
 			  </tr>
 			  <tr>
@@ -750,10 +753,43 @@ switch($_GET['p']){
 		  <tr>
 		    <td>Uw versie is: '.VERSION.'<br />
 		    De nieuwste versie is: '.$current.'<br /><br />
-		    U vind de laatste versie via de volgende url: <a href="http://freshmeat.net/projects/freshinvoice/" target="_blank">http://freshmeat.net/projects/freshinvoice/</a></td>
+		    U vind de laatste versie via de volgende url: <a href="http://www.freshinvoice.com/" target="_blank">http://www.freshinvoice.com/</a></td>
 		  </tr>
 	</table>';
 	
+	break;
+	
+	case "paymentprocessor":
+	$fact->notAllowed('99');
+	
+		echo '<form id="form" method="post" enctype="multipart/form-data" action="index.php?p=doPaymentprocessor">
+		<table width="100%" border="0" cellspacing="0" cellpadding="1">
+		  <tr>
+	          <td>Payment processor</td>
+	        </tr>
+			<tr>
+			  <td>&nbsp;</td>
+			</tr>
+			<tr>
+			  <td><label for="file">MT940 bestand: <input type="file" name="mt940" tabindex="1" id="mt940" /></label></td>
+			</tr>
+		 	<tr>
+			  <td>&nbsp;</td>
+			</tr>
+			<tr>
+			  <td><input name="submit" type="submit" id="submit" tabindex="4" value="Process" /></td>
+			</tr>
+		</table>
+		</form>';
+	
+	break;
+	
+	case "doPaymentprocessor":
+		echo '<pre>';
+		print_r($_FILES);
+		echo '</pre>';
+		
+		$manager = new Manager($_FILES['mt940']['tmp_name']);
 	break;
 	
 	case "binnenkort_verlopen":

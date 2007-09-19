@@ -157,9 +157,17 @@ $landen = array('Afghanistan','Albania','Algeria','Andorra',
 mysql_connect(DB_HOSTNAME,DB_USERNAME,DB_PASSWORD);
 mysql_select_db(DB_DATABASE);
 
+function __autoload($class_name) {
+	if (file_exists(PATH.'includes/class.'.$class_name.'.php'))
+	{
+		require_once PATH.'includes/class.'.$class_name.'.php';
+	}
+}
+
 if(!class_exists('PHPmailer')) include_once(PATH.'includes/class.phpmailer.php');
 if(!class_exists('SMTP')) include_once(PATH.'includes/class.smtp.php');
 if(!class_exists('Services_JSON')) include_once(PATH.'includes/class.JSON.php');
+if(!class_exists('Manager')) include_once(PATH.'includes/class.Manager.php');
 
 session_set_cookie_params(time()+(60*60*24*365), '/', '.'.DOMAIN);
 session_start();
