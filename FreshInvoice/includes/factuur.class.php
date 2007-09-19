@@ -1,6 +1,4 @@
 <?
-//error_reporting(E_ALL);
-
 include_once('config.inc.php');
 
 class factuur {
@@ -296,6 +294,8 @@ class factuur {
 		$rep['SUBTOTAAL']					= '';
 		$rep['BTWBEDRAG']					= '';
 		$rep['FACTUURTOTAAL']				= '';
+		$rep['INVOICEPREPEND']				= INVOICEPREPEND;
+		$rep['INVOICEEXPIREDATE']			= date(FACTUUR_DATUM_FORMAT, mktime(0,0,0,date("m",$klant['datum']),date("d",$klant['datum'])+BETALINGS_TERMIJN,date("Y",$klant['datum'])));
 		
 		if($klant['bedrijfsnaam']){
 			$rep['KLANTBEDRIJFSNAAM'] 		= $klant['bedrijfsnaam'].'<br />';
@@ -334,8 +334,6 @@ class factuur {
 		
 		$regEx = '/{#([A-Za-z0-9]+)#}/';
 		preg_match_all($regEx, $factuurTPL, $matches);
-		
-		//echo '<pre>'; print_r($matches); echo '</pre>';
 		
 		foreach($matches[0] AS $key => $REPL){
 			$display = str_replace($REPL, $rep[$matches[1][$key]], $display);
@@ -688,37 +686,11 @@ class factuur {
 	}
 	
 	function DisplayMoney ($kosten){
-		$kosten = round($kosten,2);
-		
-		if(ereg('[.]',$kosten)){	
-			$explKosten = explode('.',$kosten);
-	
-			if(strlen($explKosten[1])<2){
-				$explKosten[1] .= '0';
-			}
-			$return = $explKosten[0].",".$explKosten[1];
-	
-			return '&euro; '.$return;
-		}else{
-			return '&euro; '.$kosten.",00";
-		}
+		return '&euro; '.number_format($kosten, 2, ",", ".");
 	}
 	
 	function DisplayMoneySelect ($kosten){
-		$kosten = round($kosten,2);
-		
-		if(ereg('[.]',$kosten)){	
-			$explKosten = explode('.',$kosten);
-	
-			if(strlen($explKosten[1])<2){
-				$explKosten[1] .= '0';
-			}
-			$return = $explKosten[0].",".$explKosten[1];
-	
-			return ' [ '.$return. ' ] ';
-		}else{
-			return ' [ '.$kosten.",00" . ' ] ';
-		}
+		return ' [ '.number_format($kosten, 2, ",", ".").' ] ';
 	}
 	
 	function login($mail, $password){
@@ -756,8 +728,6 @@ class factuur {
 	}
 	
 	function isLoggedIn(){
-		/*echo '<pre>'; print_r($_SESSION); echo '</pre>'; exit;*/
-		
 		if(isset($_SESSION['naam']) AND isset($_SESSION['klantId']) AND isset($_SESSION['mail']) AND isset($_SESSION['usergroup'])){
 			return TRUE;
 		}else{
