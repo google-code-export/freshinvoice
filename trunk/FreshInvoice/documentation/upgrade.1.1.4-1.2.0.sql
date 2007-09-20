@@ -44,4 +44,16 @@ CREATE TABLE IF NOT EXISTS `paymentLogActions` (
   `positive` smallint(1) NOT NULL default '0',
   PRIMARY KEY  (`actionId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table `klant_rekeningnummer`
+-- 
+
+CREATE TABLE IF NOT EXISTS `klant_rekeningnummer` (
+`rekeningId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`klantId` INT NOT NULL ,
+`nummer` VARCHAR( 30 ) NOT NULL
+) ENGINE = MYISAM ;
         
