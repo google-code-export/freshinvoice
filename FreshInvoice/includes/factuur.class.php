@@ -406,15 +406,15 @@ class factuur {
 		
 		$mail->From     = MAILADDR;
 		$mail->FromName = FROMNAME;
-		$mail->Subject  = 'Factuur '.$factuurId.' '.BEDRIJFSNAAM;
+		$mail->Subject  = 'Factuur '.INVOICEPREPEND.$factuurId.' '.BEDRIJFSNAAM;
 		
 		$mail->Body    	= $text;
 		$mail->AddAddress(MAILADDR, FROMNAME);
 		$mail->AddAddress($record['mail'], $klantnaam);
 		if($record['bedrijfsnaam']!=''){
-			$mail->AddStringAttachment($content, $factuurId."-".urlencode($record['bedrijfsnaam']).".html");
+			$mail->AddStringAttachment($content, INVOICEPREPEND.$factuurId."-".urlencode($record['bedrijfsnaam']).".html");
 		}else{
-			$mail->AddStringAttachment($content, $factuurId."-".urlencode($record['achternaam']).".html");
+			$mail->AddStringAttachment($content, INVOICEPREPEND.$factuurId."-".urlencode($record['achternaam']).".html");
 		}
 		
 		if(!$mail->Send()){
@@ -563,7 +563,7 @@ class factuur {
 			
 			$mail->From     = MAILADDR;
 			$mail->FromName = FROMNAME;
-			$mail->Subject  = 'Factuur '.$record['factuurId'].' '.BEDRIJFSNAAM;
+			$mail->Subject  = 'Factuur '.INVOICEPREPEND.$record['factuurId'].' '.BEDRIJFSNAAM;
 			
 			$mail->Body    	= $text;
 			$mail->AddAddress(MAILADDR, FROMNAME);
@@ -572,9 +572,9 @@ class factuur {
 			if(date('D')=='Mon'){
 				$content = $this->finish_factuur($record['factuurId'], 'WRITE');
 				if($record['bedrijfsnaam']!=''){
-					$mail->AddStringAttachment($content, $factuurId."-".urlencode($record['bedrijfsnaam']).".html");
+					$mail->AddStringAttachment($content, INVOICEPREPEND.$record['factuurId']."-".urlencode($record['bedrijfsnaam']).".html");
 				}else{
-					$mail->AddStringAttachment($content, $factuurId."-".urlencode($record['achternaam']).".html");
+					$mail->AddStringAttachment($content, INVOICEPREPEND.$record['factuurId']."-".urlencode($record['achternaam']).".html");
 				}
 			}
 			
@@ -614,7 +614,7 @@ class factuur {
 		}
 		
 		$text  	= "Geachte ".$klantnaam.",\n\n";
-		$text  .= "Bij deze wil ik u graag op de hoogte stellen dat de betaling van de factuur met het ID: ".$factuurId." is ontvangen.\n\n";
+		$text  .= "Bij deze wil ik u graag op de hoogte stellen dat de betaling van de factuur met het ID: ".INVOICEPREPEND.$factuurId." is ontvangen.\n\n";
 		$text  .= AFSLUITING;
 		
 		$mail 	= new PHPMailer();
@@ -642,7 +642,7 @@ class factuur {
 		
 		$mail->From     = MAILADDR;
 		$mail->FromName = FROMNAME;
-		$mail->Subject  = 'Factuur '.$record['factuurId'].' '.BEDRIJFSNAAM;
+		$mail->Subject  = 'Factuur '.INVOICEPREPEND.$record['factuurId'].' '.BEDRIJFSNAAM;
 		
 		$mail->Body    	= $text;
 		$mail->AddAddress(MAILADDR, FROMNAME);
@@ -669,6 +669,35 @@ class factuur {
 		mysql_query($query) or die (mysql_error());
 		
 		return TRUE;
+	}
+	
+	function rekening_toevoegen ($klantId, $nummer)
+	{
+		if($klantId!="" && $nummer!="")
+		{
+			$query = "INSERT INTO `klant_rekeningnummer` ( `rekeningId` , `klantId` , `nummer` ) VALUES 
+			(NULL , '".mysql_real_escape_string($klantId)."', '".mysql_real_escape_string($nummer)."');";
+			mysql_query($query) or die (mysql_error());
+		
+			return true;
+		}else
+		{
+			return false;
+		}
+	}
+	
+	function rekening_verwijderen ($rekeningId)
+	{
+		if($rekeningId!="")
+		{
+			$query = "DELETE FROM `klant_rekeningnummer` WHERE rekeningId=".$rekeningId." LIMIT 1;";
+			mysql_query($query) or die (mysql_error());
+		
+			return true;
+		}else
+		{
+			return false;
+		}
 	}
 	
 	function delete_factuur($factuurId){

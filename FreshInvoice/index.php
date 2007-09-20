@@ -538,7 +538,7 @@ switch($_GET['p']){
 		echo '<form name="nieuwe_klant" method="post" action="index.php?p=do_persoonsgegevens">
 		<table width="100%" border="0" cellspacing="0" cellpadding="1">
 		  <tr>
-			<td width="50%">Nieuwe klant</td>
+			<td width="50%">Klantgegevens aanpassen</td>
 			<td>&nbsp;</td>
 		  </tr>
 		  <tr>
@@ -699,6 +699,57 @@ switch($_GET['p']){
 			<td><input type="submit" name="Submit" value="Aanpassen"></td>
 		  </tr>
 		</table>
+		</form><br />';
+		
+		$q = "SELECT rekeningId, nummer FROM klant_rekeningnummer WHERE klantId='".$record['klantId']."'";
+		$q = mysql_query($q) or die (mysql_error());
+		if(mysql_num_rows($q)>0)
+		{
+			echo '<table width="100%" border="0" cellspacing="0" cellpadding="1">
+			<tr>
+				<td width="50%"><b>Rekeningnummers</b></td>
+				<td>&nbsp;</td>
+			  </tr>
+			  <tr>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			  </tr>';
+
+			  while($r=mysql_fetch_array($q))
+			  {
+			  		echo '<tr>
+						<td>'.$r['nummer'].'</td>
+						<td>[ <a href="index.php?p=do_delete_rekeningnummer&rekeningId='.$r['rekeningId'].'&klantId='.$record['klantId'].'">delete</a> ]</td>
+					  </tr>';
+			  }
+			
+			echo '</table><br />';
+		}
+		
+		echo '<form name="rekeningnummer" method="post" action="index.php?p=do_add_rekeningnummer">
+		<input type="hidden" name="klantId" value="'.$record['klantId'].'" />
+		<table width="100%" border="0" cellspacing="0" cellpadding="1">
+		  <tr>
+			<td width="50%"><b>Rekeningnummers toevoegen</b></td>
+			<td>&nbsp;</td>
+		  </tr>
+		  <tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		  </tr>
+		  <tr>
+			<td>Rekeningnummer*</td>
+			<td><input type="text" name="nummer"></td>
+		  </tr>
+		  <tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		  </tr>
+		  <tr>
+			<td>&nbsp;</td>
+			<td><input type="submit" name="Submit" value="Rekening toevoegen"></td>
+		  </tr>
+		</table>
 		</form>';
 	break;
 	
@@ -726,6 +777,54 @@ switch($_GET['p']){
 				Klik <a href="index.php?p=persoonsgegevens';
 				if($fact->allowed('99') AND $_POST['klantId']){
 					echo '&klantId='.$_POST['klantId'];
+				}
+				echo'">hier</a> om uw persoonsgegevens te controleren.<br />
+				Klik <a href="index.php?p=home">hier</a> om terug te gaan naar de index.</td>
+			  </tr>
+			</table>';
+		}
+	break;
+	
+	case "do_add_rekeningnummer":
+		if($fact->rekening_toevoegen($_POST['klantId'], $_POST['nummer'])){
+			echo '<table width="100%" border="0" cellspacing="0" cellpadding="1">
+			  <tr>
+				<td width="50%">Rekeningnummer toegevoegd</td>
+				<td align="right">&nbsp;</td>
+			  </tr>
+			  <tr>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			  </tr>
+			  <tr>
+				<td colspan="2">Het rekeningnummer is succesvol toegevoegd.<br /><br />
+				Klik <a href="index.php?p=persoonsgegevens';
+				if($fact->allowed('99') AND $_POST['klantId']){
+					echo '&klantId='.$_POST['klantId'];
+				}
+				echo'">hier</a> om uw persoonsgegevens te controleren.<br />
+				Klik <a href="index.php?p=home">hier</a> om terug te gaan naar de index.</td>
+			  </tr>
+			</table>';
+		}
+	break;
+	
+	case "do_delete_rekeningnummer":
+		if($fact->rekening_verwijderen($_GET['rekeningId'])){
+			echo '<table width="100%" border="0" cellspacing="0" cellpadding="1">
+			  <tr>
+				<td width="50%">Rekeningnummer verwijderd</td>
+				<td align="right">&nbsp;</td>
+			  </tr>
+			  <tr>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			  </tr>
+			  <tr>
+				<td colspan="2">Het rekeningnummer is succesvol verwijderd.<br /><br />
+				Klik <a href="index.php?p=persoonsgegevens';
+				if($fact->allowed('99') AND $_GET['klantId']){
+					echo '&klantId='.$_GET['klantId'];
 				}
 				echo'">hier</a> om uw persoonsgegevens te controleren.<br />
 				Klik <a href="index.php?p=home">hier</a> om terug te gaan naar de index.</td>
