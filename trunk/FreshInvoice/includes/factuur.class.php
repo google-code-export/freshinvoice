@@ -362,17 +362,8 @@ class factuur {
 		
 		$record = mysql_fetch_array($query);
 		
-		if($record['geslacht']=='M'){
-			$aanhef = 'Heer';
-		}else{
-			$aanhef = 'Mevrouw';
-		}
-		
-		if($record['tussenvoegsel']!=''){
-			$klantnaam = $aanhef." ".$record['tussenvoegsel']." ".$record['achternaam'];
-		}else{
-			$klantnaam = $aanhef." ".$record['achternaam'];
-		}
+		$aanhef = $this->aanhef($record['geslacht']);
+		$klantnaam = $this->klantnaam ($aanhef, $record['tussenvoegsel'], $record['achternaam']);
 		
 		$text  	= "Geachte ".$klantnaam.",\n\n";
 		$text  .= "Bij deze uw openstaande factuur.\n";
@@ -381,33 +372,8 @@ class factuur {
 		$text  .= "PS. Deze mail en de factuur zijn automatisch gegenereerd.\n";
 		$text  .= "Indien u fouten constateerd, gelieven contact op te nemen met: ".MAILADDR;
 		
-		$mail 	= new PHPMailer();
-
-		switch(MAILER){
-			case "qmail":
-				$mail->IsQmail(); // we're sending with qmail
-			break;
-
-			case "mail":
-				$mail->IsMail(); // we're sending with mail();
-			break;
-
-			case "sendmail":
-				$mail->IsSendmail(); // we're sending with qmail
-			break;
-			
-			case "smtp":
-				$mail->IsSMTP(); // telling the class to use SMTP
-				$mail->Host = SMTP_HOST; // SMTP server
-			break;
-		}
-
-		$mail->WordWrap = 75;								// set the wordwrap
-		
-		$mail->From     = MAILADDR;
-		$mail->FromName = FROMNAME;
+		$mail = new FIMailer();
 		$mail->Subject  = 'Factuur '.INVOICEPREPEND.$factuurId.' '.BEDRIJFSNAAM;
-		
 		$mail->Body    	= $text;
 		$mail->AddAddress(MAILADDR, FROMNAME);
 		$mail->AddAddress($record['mail'], $klantnaam);
@@ -517,17 +483,8 @@ class factuur {
 		betaald='C'";
 		$query = mysql_query($query) or die (mysql_error());
 		while($record=mysql_fetch_array($query)){
-			if($record['geslacht']=='M'){
-				$aanhef = 'Heer';
-			}else{
-				$aanhef = 'Mevrouw';
-			}
-			
-			if($record['tussenvoegsel']!=''){
-				$klantnaam = $aanhef." ".$record['tussenvoegsel']." ".$record['achternaam'];
-			}else{
-				$klantnaam = $aanhef." ".$record['achternaam'];
-			}
+			$aanhef = $this->aanhef($record['geslacht']);
+			$klantnaam = $this->klantnaam ($aanhef, $record['tussenvoegsel'], $record['achternaam']);
 			
 			$verloop = date(FACTUUR_DATUM_FORMAT,$record['datum']+(BETALINGS_TERMIJN*(60*60*24)));
 			
@@ -538,33 +495,8 @@ class factuur {
 			$text   .= URL."\n\nIk hoop u hierbij voldoende te hebben geinformeerd.\n\n";
 			$text   .= AFSLUITING;
 			
-			$mail 	= new PHPMailer();
-
-			switch(MAILER){
-				case "qmail":
-					$mail->IsQmail(); // we're sending with qmail
-				break;
-	
-				case "mail":
-					$mail->IsMail(); // we're sending with mail();
-				break;
-	
-				case "sendmail":
-					$mail->IsSendmail(); // we're sending with qmail
-				break;
-				
-				case "smtp":
-					$mail->IsSMTP(); // telling the class to use SMTP
-					$mail->Host = SMTP_HOST; // SMTP server
-				break;
-			}
-
-			$mail->WordWrap = 75;	// set the wordwrap
-			
-			$mail->From     = MAILADDR;
-			$mail->FromName = FROMNAME;
+			$mail = new FIMailer();
 			$mail->Subject  = 'Factuur '.INVOICEPREPEND.$record['factuurId'].' '.BEDRIJFSNAAM;
-			
 			$mail->Body    	= $text;
 			$mail->AddAddress(MAILADDR, FROMNAME);
 			$mail->AddAddress($record['mail'], $klantnaam);
@@ -586,6 +518,45 @@ class factuur {
 		}
 	}
 	
+	function factuur_stornatie ($factuurId){
+		$query = "UPDATE factuur SET betaald='Y', betaald_datum='".time()."' WHERE factuurId='".$factuurId."'";
+		mysql_query($query) or die (mysql_error());
+		
+		$query = "SELECT factuurId, f.klantId, f.datum, k.mail, k.geslacht, k.tussenvoegsel, k.achternaam
+		FROM factuur f, klant k
+		WHERE f.klantId=k.klantId
+		AND f.factuurId='".$factuurId."'";
+		$query = mysql_query($query) or die (mysql_error());
+		if(mysql_num_rows($query)==0){
+			$this->error('Factuur niet gevonden.');
+		}
+		
+		$record = mysql_fetch_array($query);
+		
+		$aanhef = $this->aanhef($record['geslacht']);
+		$klantnaam = $this->klantnaam ($aanhef, $record['tussenvoegsel'], $record['achternaam']);
+		
+		$text  	= "Geachte ".$klantnaam.",\n\n";
+		$text  .= "Via deze weg wil ik u graag op de hoogte stellen, dat we een stornatie hebben ontvangen ";
+		$text  .= "op de door ons geincasseerde factuur, met het nummer ".INVOICEPREPEND.$factuurId.".\n";
+		$text  .= "Ik wil u verzoeken om contact met onze administratie afdeling op te nemen.\n\nAlvast bedankt.\n\n";
+		$text  .= AFSLUITING;
+		
+		$mail = new FIMailer();
+		$mail->Subject  = 'Stornatie factuur '.INVOICEPREPEND.$record['factuurId'].' '.BEDRIJFSNAAM;
+		$mail->Body    	= $text;
+		$this->AddAddress(MAILADDR, FROMNAME); // CC TO ME
+		$mail->AddAddress($record['mail'], $klantnaam);
+		
+		if(!$mail->Send()){
+		   echo "Mailer Error: ".$record['mail']." => ".$mail->ErrorInfo."\n";
+		}
+		
+		$mail->ClearAddresses();
+		
+		return TRUE;
+	}
+	
 	function factuur_betaald ($factuurId){
 		$query = "UPDATE factuur SET betaald='Y', betaald_datum='".time()."' WHERE factuurId='".$factuurId."'";
 		mysql_query($query) or die (mysql_error());
@@ -601,52 +572,18 @@ class factuur {
 		
 		$record = mysql_fetch_array($query);
 		
-		if($record['geslacht']=='M'){
-			$aanhef = 'Heer';
-		}else{
-			$aanhef = 'Mevrouw';
-		}
-		
-		if($record['tussenvoegsel']!=''){
-			$klantnaam = $aanhef." ".$record['tussenvoegsel']." ".$record['achternaam'];
-		}else{
-			$klantnaam = $aanhef." ".$record['achternaam'];
-		}
+		$aanhef = $this->aanhef($record['geslacht']);
+		$klantnaam = $this->klantnaam ($aanhef, $record['tussenvoegsel'], $record['achternaam']);
 		
 		$text  	= "Geachte ".$klantnaam.",\n\n";
-		$text  .= "Bij deze wil ik u graag op de hoogte stellen dat de betaling van de factuur met het ID: ".INVOICEPREPEND.$factuurId." is ontvangen.\n\n";
+		$text  .= "Bij deze wil ik u graag op de hoogte stellen dat de betaling van de factuur met het nummer: ".INVOICEPREPEND.$factuurId." is ontvangen.\n\n";
 		$text  .= AFSLUITING;
 		
-		$mail 	= new PHPMailer();
-		
-		switch(MAILER){
-			case "qmail":
-				$mail->IsQmail(); // we're sending with qmail
-			break;
-
-			case "mail":
-				$mail->IsMail(); // we're sending with mail();
-			break;
-
-			case "sendmail":
-				$mail->IsSendmail(); // we're sending with qmail
-			break;
-				
-			case "smtp":
-				$mail->IsSMTP(); // telling the class to use SMTP
-				$mail->Host = SMTP_HOST; // SMTP server
-			break;
-		}
-	
-		$mail->WordWrap = 75;		// set the wordwrap
-		
-		$mail->From     = MAILADDR;
-		$mail->FromName = FROMNAME;
+		$mail = new FIMailer();
 		$mail->Subject  = 'Factuur '.INVOICEPREPEND.$record['factuurId'].' '.BEDRIJFSNAAM;
-		
 		$mail->Body    	= $text;
-		$mail->AddAddress(MAILADDR, FROMNAME);
-		$mail->AddAddress($record['mail'], $klantnaam);
+		$this->AddAddress(MAILADDR, FROMNAME); // CC TO ME
+		$mail->AddAddress($record['mail'], $klantnaam); // SEND TO CLIENT
 		
 		if(!$mail->Send()){
 		   echo "Mailer Error: ".$record['mail']." => ".$mail->ErrorInfo."\n";
@@ -873,34 +810,9 @@ class factuur {
 			$text .= "Uw e-mail adres: ".$emailadres."\n";
 			$text .= "Uw nieuwe wachtwoord: ".$passwd."\n\n".AFSLUITING;
 			
-			$mail 	= new PHPMailer();
-			
-			switch(MAILER){
-				case "qmail":
-					$mail->IsQmail(); // we're sending with qmail
-				break;
-	
-				case "mail":
-					$mail->IsMail(); // we're sending with mail();
-				break;
-	
-				case "sendmail":
-					$mail->IsSendmail(); // we're sending with qmail
-				break;
-					
-				case "smtp":
-					$mail->IsSMTP(); // telling the class to use SMTP
-					$mail->Host = SMTP_HOST; // SMTP server
-				break;
-			}
-		
-			$mail->WordWrap = 75;		// set the wordwrap
-			
-			$mail->From     = MAILADDR;
-			$mail->FromName = FROMNAME;
+			$mail = new FIMailer();
 			$mail->Subject  = 'Uw wachtwoord';
-			
-			$mail->Body    	= $text;
+			$mail->Body = $text;
 			$mail->AddAddress($emailadres, $naam);
 			
 			if(!$mail->Send()){
@@ -927,6 +839,24 @@ class factuur {
 		}else if (date("m")>=10 && date("m")<=12)
 		{
 			return mktime(0,0,0,10-$min,1,date("Y"));
+		}
+	}
+	
+	function aanhef ($sex)
+	{
+		if($sex=='M'){
+			return 'Heer';
+		}else{
+			return 'Mevrouw';
+		}
+	}
+	
+	function klantnaam ($aanhef, $tussenvoegsel, $achternaam)
+	{
+		if($tussenvoegsel!=''){
+			return $aanhef." ".$tussenvoegsel." ".$achternaam;
+		}else{
+			return $aanhef." ".$achternaam;
 		}
 	}
 }
