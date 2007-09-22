@@ -26,15 +26,12 @@ class Processor
 		{
 			// MATCH FACTUURNUM(M)ER(S) FRE2968
 			preg_match_all("/".INVOICEPREPEND."([0-9]{2,})/", $entry->statement, $invoiceIds);
-			echo '<pre>';
-			print_r($invoiceIds);
-			echo '</pre>';
 		}
 		
-		/*if($entry->creditDebit == "C" && $entry->amount!="")
-		{	
+		if($entry->creditDebit == "C" && $entry->amount!="")
+		{
 			if(count($invoiceIds[1])==1)
-			// SINGLE MATCH
+			// SINGLE MATCH ON INVOICE ID
 			{
 				$action = 2;
 				if(!$this->matchSingleInvoice ($invoiceIds[1][0], $entry->amount))
@@ -45,7 +42,7 @@ class Processor
 					if(!$this->doPayment ($invoiceIds[1][0])) $action = 6;
 				}
 			}else if(count($invoiceIds[1]) > 1)
-			// MULTIPLE MATCHES
+			// MULTIPLE MATCHES ON INVOICE IDS
 			{
 				$action = 3;
 				if(!$this->matchMultipleInvoices ($invoiceIds[1], $entry->amount))
@@ -62,6 +59,10 @@ class Processor
 			// NO MATCHES
 			{
 				$action = 1;
+				
+				// TRY TO MATCH BY A ACCOUNTNUMBER
+				$invoiceIds[1][0] = $this->matchByAccountNumber($entry->accountnr, $entry->amount);
+				if(!$this->doPayment($invoiceIds[1][0])) $action = 12;
 			}
 		}else if ($entry->creditDebit == "D" && $entry->amount!="" && preg_match("/(STORNO)/", $entry->statement))
 		{
@@ -74,17 +75,14 @@ class Processor
 		}
 		
 		$payment = new PaymentLog();
-		$payment->__fill(NULL, NULL, $entry, $entry->accountnr, mktime(0,0,0,$entry->month,$entry->day,$entry->year), $entry->creditDebit, $entry->amount, $entry->transactionType, $entry->statement, $action, $invoiceIds);
-		$payment->save();*/
+		$payment->__fill(NULL, NULL, $entry, $entry->accountnr, mktime(0,0,0,$entry->month,$entry->day,$entry->year), $entry->creditDebit, $entry->amount, $entry->transactionType, $entry->statement, $entry->original, $action, $invoiceIds);
+		$payment->save();
 	}
 	
 	public function matchSingleInvoice ($invoiceId, $amount)
 	{
-		/*$query = "SELECT invoiceID, vatPercentage, totalPrice, ROUND(SUM(totalPrice * (1+(vatPercentage/100))),2) AS incl
-		FROM invoice 
-		WHERE invoiceID = '".mysql_real_escape_string($invoiceId)."' 
-		GROUP BY invoiceID
-		LIMIT 1";
+		$query = "SELECT invoiceID, bedrag AS amount
+		FROM factuur WHERE factuurId = '".mysql_real_escape_string($invoiceId)."' LIMIT 1";
 		$query = mysql_query($query) or die (mysql_error());
 		
 		if(mysql_num_rows($query)==0)
@@ -94,22 +92,20 @@ class Processor
 		{
 			$record = mysql_fetch_array($query);
 			
-			if ($record['incl'] == $amount)
+			if ($record['amount'] == $amount)
 			{
 				return true;
 			}
 			
 			return false;
-		}*/
+		}
 	}
 	
 	public function matchMultipleInvoices ($invoiceIds = array(), $amount)
 	{
-		/*$query = "SELECT vatPercentage, totalPrice, ROUND(SUM(totalPrice * (1+(vatPercentage/100))),2) AS incl
-		FROM invoice 
-		WHERE invoiceID IN (".mysql_real_escape_string(implode(",", $invoiceIds)).")
-		GROUP BY customerID
-		LIMIT 1";
+		$query = "SELECT ROUND(SUM(bedrag),2) AS amount
+		FROM factuur WHERE factuurId IN (".mysql_real_escape_string(implode(",", $invoiceIds)).")
+		GROUP BY klantId LIMIT 1";
 		$query = mysql_query($query) or die (mysql_error());
 		
 		if(mysql_num_rows($query)==0)
@@ -119,41 +115,49 @@ class Processor
 		{
 			$record = mysql_fetch_array($query);
 			
-			if ($record['incl'] == $amount)
+			if ($record['amount'] == $amount)
 			{
 				return true;
 			}
 			
 			return false;
-		}*/
+		}
+	}
+	
+	public function matchByAccountNumber ($accountNumber, $amount)
+	{
+		$query = "SELECT factuurId, bedrag AS amount FROM
+		factuur f, klant_rekeningnummer k
+		WHERE k.klantId=f.klantId AND
+		k.nummer = '".mysql_real_escape_string($accountNumber)."' AND
+		bedrag = '".mysql_real_escape_string($amount)."' AND betaald='C'
+		ORDER BY factuurId ASC LIMIT 1";
+		$query = mysql_query($query) or die (mysql_error());
+		
+		if(mysql_num_rows($query)==1)
+		{
+			$record = mysql_fetch_array($query);
+			return $record['factuurId'];
+		}else
+		{
+			return false;
+		}
 	}
 	
 	public function doPayment ($invoiceID)
 	{
-		/*if($invoiceID=="") return false;
+		if($invoiceID=="") return false;
 		
-		$query = "UPDATE `invoice` SET `payedDate` = NOW( ), `payed` = 'y' WHERE `invoiceID` = ".mysql_real_escape_string($invoiceID).";";
-		if(!mysql_query($query))
-		{
-			return false;
-		}else
-		{
-			return true;
-		}*/
+		$fact = new factuur();
+		return $fact->factuur_betaald($invoiceID);
 	}
 	
 	public function doStornation ($invoiceID)
 	{
-		/*if($invoiceID=="") return false;
+		if($invoiceID=="") return false;
 		
-		$query = "UPDATE `invoice` SET `payedDate` = '0000-00-00', `payed` = 'n' WHERE `invoiceID` = ".mysql_real_escape_string($invoiceID).";";
-		if(!mysql_query($query))
-		{
-			return false;
-		}else
-		{
-			return true;
-		}*/
+		$fact = new factuur();
+		return $fact->factuur_stornatie($invoiceID);
 	}
 }
 

@@ -92,6 +92,7 @@ class Parser
 		
 		// GET THE ENTRIES
 		$entries = explode(":61:", $this->content);
+		unset($entries[0]); // NO USE IN AN EMPTY RECORD
 		
 		foreach($entries AS $key => $entry)
 		{
@@ -99,7 +100,15 @@ class Parser
 			$entry = ":61:".$entry;
 			
 			// ACCOUNT INFORMATION
-			preg_match("/:86:\s*[A-Za-z]*\s*([\d\.]+)\s*([A-Za-z0-9\s\.,'\/\\\\(\)\$\{\*\^\?\+\#]+)/",$entry,$account);
+			// :86: 11.11.11.111 A BLAAT OR :86:GIRO       11111 BLAAT.COM B.V.
+			preg_match("/:86:\s*[A-Za-z]*\s*([\d\.]+)\s*([^$]+)/",$entry,$account);
+			
+			if($account[2]=="")
+			{
+				// WEIRD PAYMENT SYSTEMS AT SHOPS
+				// :86:BEA   NR FN0806   13.09.07/17.57
+				preg_match("/:86:([A-Za-z]+\s*NR\s*[A-Za-z\d]+)\s*([^$]+)/",$entry,$account);
+			}
 			
 			// BOOKING INFORMATION
 			preg_match("/:61:([\d]{2})([\d]{2})([\d]{2})([\d]{2})([\d]{2})([CDcd]{1})([0-9\,\.]+)([N0-9]{4})([A-Z]{6})/",$entry,$match);
@@ -108,8 +117,11 @@ class Parser
 			$match[7] = str_replace(".", "", $match[7]);
 			$match[7] = str_replace(",", ".", $match[7]);
 			
+			// THE BANKS DON'T POST ZERO'S AS THE END, WE DON'T USE NUMBERS BEHIND THE COMMA'S IF ,00
+			if(substr($match[7], -1)==".") $match[7] = substr($match[7], 0, -1);
+			
 			$this->entries[$key] = new Entry();
-			$this->entries[$key]->__fill($account[1], $match[3], $match[2], $match[1], $match[6], $match[7], $match[8], $account[2]);
+			$this->entries[$key]->__fill($account[1], $match[3], $match[2], $match[1], $match[6], $match[7], $match[8], $account[2], $entry);
 		}
 	}
 	

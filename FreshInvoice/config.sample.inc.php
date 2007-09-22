@@ -166,6 +166,7 @@ function __autoload($class_name) {
 
 if(!class_exists('PHPmailer')) include_once(PATH.'includes/class.phpmailer.php');
 if(!class_exists('SMTP')) include_once(PATH.'includes/class.smtp.php');
+if(!class_exists('FIMailer')) include_once(PATH.'includes/class.fimailer.php');
 if(!class_exists('Services_JSON')) include_once(PATH.'includes/class.JSON.php');
 if(!class_exists('Manager')) include_once(PATH.'includes/class.Manager.php');
 

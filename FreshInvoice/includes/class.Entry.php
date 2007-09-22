@@ -11,13 +11,14 @@ class Entry
 	private $amount;
 	private $transactionType;
 	private $statement;
+	private $original;
 	
 	public function __construct ()
 	{
 		
 	}
 	
-	public function __fill ($accountnr, $day, $month, $year, $creditDebit, $amount, $transactionType, $statement)
+	public function __fill ($accountnr, $day, $month, $year, $creditDebit, $amount, $transactionType, $statement, $original)
 	{
 		
 		$this->statement 				= $statement;
@@ -28,6 +29,7 @@ class Entry
 		$this->amount 					= $amount;
 		$this->transactionType 			= $transactionType;
 		$this->accountnr 				= $accountnr;
+		$this->original 				= $original;
 	}
 	
 	public function __get ($name)

@@ -883,11 +883,7 @@ switch($_GET['p']){
 	
 	break;
 	
-	case "doPaymentprocessor":
-		echo '<pre>';
-		print_r($_FILES);
-		echo '</pre>';
-		
+	case "doPaymentprocessor":		
 		$manager = new Manager($_FILES['mt940']['tmp_name']);
 	break;
 	

@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS `paymentLog` (
   `eAmount` double NOT NULL,
   `eTransactionType` varchar(10) NOT NULL,
   `eStatement` text NOT NULL,
+  `eOriginal` text NOT NULL,
   `action` tinyint(1) NOT NULL,
   `invoiceIds` text NOT NULL,
   `checked` smallint(1) NOT NULL default '0',
@@ -43,7 +44,25 @@ CREATE TABLE IF NOT EXISTS `paymentLogActions` (
   `action` varchar(255) NOT NULL,
   `positive` smallint(1) NOT NULL default '0',
   PRIMARY KEY  (`actionId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- 
+-- Dumping data for table `paymentLogActions`
+-- 
+
+INSERT INTO `paymentLogActions` (`actionId`, `action`, `positive`) VALUES 
+(1, 'No match', 0),
+(2, 'Single payment', 1),
+(3, 'Multiple payments', 1),
+(4, 'Complete failure', 0),
+(5, 'Single payment failure', 0),
+(6, 'Single payment update failure', 0),
+(7, 'Multiple payments failure', 0),
+(8, 'Multiple payments update failure', 0),
+(9, 'Non credit / empty', 0),
+(10, 'Stornation', 2),
+(11, 'Stornation failure', 0),
+(12, 'Single payment by accountnumber', 1);
 
 -- --------------------------------------------------------
 
