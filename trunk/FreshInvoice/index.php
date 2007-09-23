@@ -372,10 +372,31 @@ switch($_GET['p']){
 				<td><a href="index.php?p=facturen" target="mainFrame">facturen</a></td>
 			  </tr>
 			  <tr>
+				<td><a href="index.php?p=incasso_overzicht" target="mainFrame">incasso overzicht</a></td>
+			  </tr>
+			  <tr>
+				<td>&nbsp;</td>
+			  </tr>
+			  <tr>
 				<td><a href="index.php?p=paymentprocessor" target="mainFrame">payment processor</a></td>
 			  </tr>
 			  <tr>
-				<td><a href="index.php?p=incasso_overzicht" target="mainFrame">incasso overzicht</a></td>
+				<td><a href="index.php?p=paymentsgood" target="mainFrame">goede betalingen</a></td>
+			  </tr>
+			  <tr>
+				<td><a href="index.php?p=paymentswrong" target="mainFrame">foute betalingen</a></td>
+			  </tr>
+			  <tr>
+				<td><a href="index.php?p=stornations" target="mainFrame">stornaties</a></td>
+			  </tr>
+			  <tr>
+				<td><a href="index.php?p=stornationswrong" target="mainFrame">foute stornaties</a></td>
+			  </tr>
+			  <tr>
+				<td><a href="index.php?p=paymentaandacht" target="mainFrame">aandacht betalingen</a></td>
+			  </tr>
+			  <tr>
+				<td><a href="index.php?p=paymentsearch" target="mainFrame">betalingen zoeken</a></td>
 			  </tr>
 			  <tr>
 				<td>&nbsp;</td>
@@ -859,16 +880,11 @@ switch($_GET['p']){
 	break;
 	
 	case "paymentprocessor":
-	$fact->notAllowed('99');
-	
+		$fact->notAllowed('99');
+		$overig = new Overige();
+		echo $overig->pageHeader("Payment processor");
 		echo '<form id="form" method="post" enctype="multipart/form-data" action="index.php?p=doPaymentprocessor">
 		<table width="100%" border="0" cellspacing="0" cellpadding="1">
-		  <tr>
-	          <td>Payment processor</td>
-	        </tr>
-			<tr>
-			  <td>&nbsp;</td>
-			</tr>
 			<tr>
 			  <td><label for="file">MT940 bestand: <input type="file" name="mt940" tabindex="1" id="mt940" /></label></td>
 			</tr>
@@ -883,8 +899,183 @@ switch($_GET['p']){
 	
 	break;
 	
-	case "doPaymentprocessor":		
+	case "doPaymentprocessor":
+		$fact->notAllowed('99');	
 		$manager = new Manager($_FILES['mt940']['tmp_name']);
+		
+		header("Location: index.php?p=paymentsgood");
+	break;
+	
+	case "paymentsgood":
+		$fact->notAllowed('99');
+		$overig = new Overige();
+		echo $overig->pageHeader("Goede betalingen");
+		echo $overig->paymentTableHeader();
+		
+		$tel = 0;
+		$query = "SELECT logId, eAccountnr, eDate, eCreditDebit, eAmount, eStatement, eTransactionType, a.action
+		FROM paymentLog p, paymentLogActions a
+		WHERE p.action = a.actionId AND
+		checked = 0 AND
+		a.positive = 1
+		ORDER BY logId DESC
+		LIMIT 0,30";
+		$query = mysql_query($query) or die (mysql_error());
+		while($record=mysql_fetch_assoc($query))
+		{
+			echo $overig->paymentTable($record['logId'], $record['eAccountnr'], $record['eDate'], $record['eCreditDebit'], $record['eAmount'], $record['eStatement'], $record['eTransactionType'], $record['action'], $tel);
+			$tel++;
+		}
+		
+		echo $overig->paymentTableFooter();
+	break;
+	
+	case "paymentswrong":
+		$fact->notAllowed('99');
+		$overig = new Overige();
+		echo $overig->pageHeader("Foute betalingen");
+		echo $overig->paymentTableHeader();
+		
+		$tel = 0;
+		$query = "SELECT logId, eAccountnr, eDate, eCreditDebit, eAmount, eStatement, eTransactionType, a.action
+		FROM paymentLog p, paymentLogActions a
+		WHERE p.action = a.actionId AND
+		checked = 0 AND
+		a.positive = 0 
+		ORDER BY logId DESC
+		LIMIT 0,30";
+		$query = mysql_query($query) or die (mysql_error());
+		while($record=mysql_fetch_assoc($query))
+		{
+			echo $overig->paymentTable($record['logId'], $record['eAccountnr'], $record['eDate'], $record['eCreditDebit'], $record['eAmount'], $record['eStatement'], $record['eTransactionType'], $record['action'], $tel);
+			$tel++;
+		}
+		
+		echo $overig->paymentTableFooter();
+	break;
+	
+	case "stornations":
+		$fact->notAllowed('99');
+		$overig = new Overige();
+		echo $overig->pageHeader("Stornaties");
+		echo $overig->paymentTableHeader();
+		
+		$tel = 0;
+		$query = "SELECT logId, eAccountnr, eDate, eCreditDebit, eAmount, eStatement, eTransactionType, a.action
+		FROM paymentLog p, paymentLogActions a
+		WHERE p.action = a.actionId AND
+		checked = 0 AND
+		a.actionId = 10 
+		ORDER BY logId DESC
+		LIMIT 0,30";
+		$query = mysql_query($query) or die (mysql_error());
+		while($record=mysql_fetch_assoc($query))
+		{
+			echo $overig->paymentTable($record['logId'], $record['eAccountnr'], $record['eDate'], $record['eCreditDebit'], $record['eAmount'], $record['eStatement'], $record['eTransactionType'], $record['action'], $tel);
+			$tel++;
+		}
+		
+		echo $overig->paymentTableFooter();
+	break;
+	
+	case "stornationswrong":
+		$fact->notAllowed('99');
+		$overig = new Overige();
+		echo $overig->pageHeader("Foute stornaties");
+		echo $overig->paymentTableHeader();
+		
+		$tel = 0;
+		$query = "SELECT logId, eAccountnr, eDate, eCreditDebit, eAmount, eStatement, eTransactionType, a.action
+		FROM paymentLog p, paymentLogActions a
+		WHERE p.action = a.actionId AND
+		checked = 0 AND
+		a.actionId = 11 
+		ORDER BY logId DESC
+		LIMIT 0,30";
+		$query = mysql_query($query) or die (mysql_error());
+		while($record=mysql_fetch_assoc($query))
+		{
+			echo $overig->paymentTable($record['logId'], $record['eAccountnr'], $record['eDate'], $record['eCreditDebit'], $record['eAmount'], $record['eStatement'], $record['eTransactionType'], $record['action'], $tel);
+			$tel++;
+		}
+		
+		echo $overig->paymentTableFooter();
+	break;
+	
+	case "paymentaandacht":
+		$fact->notAllowed('99');
+		$overig = new Overige();
+		echo $overig->pageHeader("Aandacht betalingen");
+		echo $overig->paymentTableHeader();
+		
+		$tel = 0;
+		$query = "SELECT logId, eAccountnr, eDate, eCreditDebit, eAmount, eStatement, eTransactionType, a.action, count( `logId` ) AS aantalx 
+		FROM paymentLog p, paymentLogActions a
+		WHERE p.action = a.actionId AND checked = 0
+		GROUP BY `invoiceIds` HAVING count( `logId` ) > 1";
+		$query = mysql_query($query) or die (mysql_error());
+		while($record=mysql_fetch_assoc($query))
+		{
+			echo $overig->paymentTable($record['logId'], $record['eAccountnr'], $record['eDate'], $record['eCreditDebit'], $record['eAmount'], $record['eStatement'], $record['eTransactionType'], $record['action'], $tel);
+			$tel++;
+		}
+		
+		echo $overig->paymentTableFooter();
+	break;
+	
+	case "paymentsearch":
+		$fact->notAllowed('99');
+		$overig = new Overige();
+		echo $overig->pageHeader("Zoeken in het paymentLog");
+		
+		echo '<form action="index.php?p=paymentsearch" method="post">
+		<table width="100%" border="0" cellspacing="0" cellpadding="1">
+		  <tr>
+		    <td><label>Zoek op <select name="tabel">
+			<option value="eStatement">factuurnummer</option>
+			<option value="time">time</option>
+			<option value="eAccountnr">rekening nummer</option>
+			<option value="eCreditDebit">credit / debit</option>
+			<option value="eAmount">bedrag</option>
+			<option value="eTransactionType">P-Type</option>
+			<option value="action">action</option>
+			</select></label> <label>naar <input type="text" name="invoice"></label> <input type="submit" value="zoeken"></td>
+		  </tr>
+		</table><br />
+		</form>';
+		
+		if($_POST['invoice'] && $_POST['tabel'])
+		{
+			
+			echo $overig->paymentTableHeader();
+			
+			$tel = 0;
+			$query = "SELECT logId, eAccountnr, eDate, eCreditDebit, eAmount, eStatement, eTransactionType,  a.action
+			FROM paymentLog p, paymentLogActions a
+			WHERE p.action = a.actionId AND 
+			`".$_POST['tabel']."` LIKE CONVERT( _utf8 '%".mysql_real_escape_string($_POST['invoice'])."%' USING latin1 ) 
+			COLLATE latin1_swedish_ci";
+			$query = mysql_query($query) or die (mysql_error());
+			while($record=mysql_fetch_assoc($query))
+			{
+				echo $overig->paymentTable($record['logId'], $record['eAccountnr'], $record['eDate'], $record['eCreditDebit'], $record['eAmount'], $record['eStatement'], $record['eTransactionType'], $record['action'], $tel);
+				$tel++;
+			}
+			
+			echo $overig->paymentTableFooter();
+		}
+	break;
+	
+	case "paymentchecked":
+		$fact->notAllowed('99');
+		
+		if($_GET['logId']!="")
+		{
+			$query = "UPDATE paymentLog SET checked = 1 WHERE logId=".$_GET['logId'];
+			mysql_query($query) or die (mysql_error());
+		}
+		
+		header("Location: ".$_SERVER['HTTP_REFERER']);
 	break;
 	
 	case "binnenkort_verlopen":
