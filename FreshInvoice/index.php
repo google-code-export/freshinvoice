@@ -351,31 +351,19 @@ switch($_GET['p']){
 				<td><a href="index.php?p=add_categorie" target="mainFrame">categorie invoegen</a></td>
 			  </tr>
 			  <tr>
-				<td>&nbsp;</td>
-			  </tr>
-			  <tr>
 				<td><a href="index.php?p=beheer_artikelen" target="mainFrame">artikelen beheren</a></td>
 			  </tr>
 			  <tr>
 				<td><a href="index.php?p=add_artikel" target="mainFrame">artikel invoegen</a></td>
 			  </tr>
 			  <tr>
-				<td>&nbsp;</td>
-			  </tr>
-			  <tr>
 				<td><a href="index.php?p=klantenlijst" target="mainFrame">klantenlijst</a></td>
-			  </tr>
-			  <tr>
-				<td>&nbsp;</td>
 			  </tr>
 			  <tr>
 				<td><a href="index.php?p=facturen" target="mainFrame">facturen</a></td>
 			  </tr>
 			  <tr>
 				<td><a href="index.php?p=incasso_overzicht" target="mainFrame">incasso overzicht</a></td>
-			  </tr>
-			  <tr>
-				<td>&nbsp;</td>
 			  </tr>
 			  <tr>
 				<td><a href="index.php?p=paymentprocessor" target="mainFrame">payment processor</a></td>
@@ -399,25 +387,16 @@ switch($_GET['p']){
 				<td><a href="index.php?p=paymentsearch" target="mainFrame">betalingen zoeken</a></td>
 			  </tr>
 			  <tr>
-				<td>&nbsp;</td>
-			  </tr>
-			  <tr>
 				<td><a href="index.php?p=factuur_vorig_kwartaal" target="mainFrame">vorig kwartaal</a></td>
 			  </tr>
 			  <tr>
 				<td><a href="index.php?p=factuur_alles" target="mainFrame">alle facturen</a></td>
 			  </tr>
 			  <tr>
-				<td>&nbsp;</td>
-			  </tr>
-			  <tr>
 				<td><a href="index.php?p=binnenkort_verlopen" target="mainFrame">binnenkort verlopen</a></td>
 			  </tr>
 			  <tr>
 				<td><a href="index.php?p=maak_factuur" target="mainFrame">factuur maken</a></td>
-			  </tr>
-			  <tr>
-				<td>&nbsp;</td>
 			  </tr>
 			  <tr>
 				<td><a href="index.php?p=version" target="mainFrame">versie</a></td>
