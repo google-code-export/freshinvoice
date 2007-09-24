@@ -36,7 +36,7 @@ define("FACTUUR_LOGO", 			'<a href="http://www.freshway.biz"><img src="http://ww
 define("FACTUUR_DATUM_FORMAT",  'd/m/Y'); //www.php.net/date
 define("VERSION", '1.2.0');
 
-$btwTarrieven	= array('19.0','20.0','0.0');
+$btwTarrieven	= array('19.0','20.0','6.0','0.0');
 
 $KVKplaatsen	= array(
 'Amsterdam',
@@ -158,9 +158,13 @@ mysql_connect(DB_HOSTNAME,DB_USERNAME,DB_PASSWORD);
 mysql_select_db(DB_DATABASE);
 
 function __autoload($class_name) {
+
 	if (file_exists(PATH.'includes/class.'.$class_name.'.php'))
+
 	{
+
 		require_once PATH.'includes/class.'.$class_name.'.php';
+
 	}
 }
 

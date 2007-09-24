@@ -370,7 +370,7 @@ class factuur {
 		$text  .= "Gelieve deze factuur binnen ".BETALINGS_TERMIJN." dagen na de factuurdatum (".date(FACTUUR_DATUM_FORMAT, $record['datum']).") te voldoen.\n\n";
 		$text  .= AFSLUITING."\n\n";
 		$text  .= "PS. Deze mail en de factuur zijn automatisch gegenereerd.\n";
-		$text  .= "Indien u fouten constateerd, gelieven contact op te nemen met: ".MAILADDR;
+		$text  .= "Indien u fouten constateert, gelieven contact op te nemen met: ".MAILADDR;
 		
 		$mail = new FIMailer();
 		$mail->Subject  = 'Factuur '.INVOICEPREPEND.$factuurId.' '.BEDRIJFSNAAM;
