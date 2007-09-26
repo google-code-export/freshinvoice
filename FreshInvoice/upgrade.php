@@ -122,5 +122,18 @@ if(!table_exists("klant_rekeningnummer")) // version 1.2.0
 	mysql_query($query) or die (mysql_error());
 }
 
+if(!table_exists("printQueue")) // version 1.2.0
+{
+	echo "Creating the printQueue table<br />\n";
+	$query = "CREATE TABLE `printQueue` (
+	  `queueId` int(11) NOT NULL auto_increment,
+	  `print` text NOT NULL,
+	  `times` smallint(6) NOT NULL,
+	  `printed` smallint(1) NOT NULL default '0',
+	  PRIMARY KEY  (`queueId`)
+	) ENGINE=MyISAM  DEFAULT CHARSET=latin1;";
+	mysql_query($query) or die (mysql_error());
+}
+
 echo '<h1>Upgrade done</h1><font color="red">Remove the upgrade.php file</font>';
 ?>
