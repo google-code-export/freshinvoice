@@ -882,7 +882,7 @@ switch($_GET['p']){
 		$fact->notAllowed('99');	
 		$manager = new Manager($_FILES['mt940']['tmp_name']);
 		
-		header("Location: index.php?p=paymentsgood");
+		echo "<script>window.location.href='index.php?p=paymentsgood';</script>";
 	break;
 	
 	case "paymentsgood":
@@ -1054,7 +1054,7 @@ switch($_GET['p']){
 			mysql_query($query) or die (mysql_error());
 		}
 		
-		header("Location: ".$_SERVER['HTTP_REFERER']);
+		echo '<script>window.location.href="'.$_SERVER['HTTP_REFERER'].'";</script>';
 	break;
 	
 	case "binnenkort_verlopen":
