@@ -60,3 +60,12 @@ a:active {
 	text-decoration: underline;
 	color: #000000;
 }
+a img {
+	border: none;
+}
+br.pagebreak {
+	page-break-after: always;
+}
+td.right {
+	text-align: right;
+}

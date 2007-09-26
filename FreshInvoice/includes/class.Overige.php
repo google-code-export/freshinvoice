@@ -55,6 +55,20 @@ class Overige
 		    <td>[<a href="index.php?p=paymentchecked&logId='.$logId.'">checked</a>]</td>
 		  </tr>';
 	}
+	
+	public function printQueueToPrint ()
+	{
+		$printQueue = array();
+		$query = "SELECT * FROM printQueue WHERE printed=0";
+		$query = mysql_query($query) or die (mysql_error());
+		while($record=mysql_fetch_assoc($query))
+		{
+			$printQueue[$record['queueId']] = new PrintQueue ();
+			$printQueue[$record['queueId']]->__fill($record['queueId'], $record['print'], $record['times'], $record['printed']);
+		}
+		
+		return $printQueue;
+	}
 }
 
 ?>

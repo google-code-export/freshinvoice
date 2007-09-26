@@ -407,9 +407,17 @@ class factuur {
 		$count = 0;
 		if(mysql_num_rows($query)>0){
 			while($record=mysql_fetch_array($query)){
-				//echo $count."\n";
+				// CREATE THE INVOICE
 				$content = $this->finish_factuur($record['factuurId'], 'WRITE');
+				
+				// MAIL THE INVOICE
 				$this->mail_factuur($record['factuurId'],$content);
+				
+				// ADD THE INVOICE TO THE PRINTQUEUE
+				$printQueue = new PrintQueue();
+				$printQueue->__fill (NULL, $content, 2, 0);
+				$printQueue->save();
+				
 				$count++;
 			}
 		}
@@ -417,14 +425,27 @@ class factuur {
 	
 	function sendnow_factuur ($factuurId){
 		$this->resend_factuur($factuurId);
-		return TRUE;
+		return true;
 	}	
 	
 	function resend_factuur ($factuurId){
 		$content = $this->finish_factuur($factuurId, 'WRITE');
 		$this->mail_factuur($factuurId,$content,'RESEND');
 		
-		return TRUE;
+		return true;
+	}
+	
+	function reprint_factuur ($factuurId)
+	{
+		// CREATE THE INVOICE
+		$content = $this->finish_factuur($factuurId, 'WRITE');
+		
+		// ADD THE INVOICE TO THE PRINTQUEUE
+		$printQueue = new PrintQueue();
+		$printQueue->__fill (NULL, $content, 1, 0);
+		$printQueue->save();
+		
+		return true;
 	}
 	
 	function auto_herhaal ($periode, $sign='='){
