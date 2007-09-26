@@ -400,6 +400,9 @@ switch($_GET['p']){
 			  </tr>
 			  <tr>
 				<td><a href="index.php?p=version" target="mainFrame">versie</a></td>
+			  </tr>
+			  <tr>
+				<td><a href="index.php?p=printQueue" target="mainFrame">print queue</a></td>
 			  </tr>';
 		}
 		  
@@ -856,6 +859,35 @@ switch($_GET['p']){
 		  </tr>
 	</table>';
 	
+	break;
+	
+	case "printQueue":
+		echo '<script language="Javascript1.2">
+		function printpage() {
+			window.print();
+		}
+		</script>';
+		
+		$overige = new Overige();
+		$printQueue = $overige->printQueueToPrint();
+		if(count($printQueue)==0)
+		{
+			$fact->error('Er zijn geen items die geprint moeten worden.');
+		}else
+		{
+			foreach($printQueue AS $q)
+			{
+				for($i=0; $i<$q->times;$i++)
+				{
+					echo $q->print;
+					echo '<br class="pagebreak" />';
+				}
+				$q->printed = 1;
+				$q->save();
+			}
+			
+			echo '<script language="Javascript1.2">printpage();</script>';
+		}
 	break;
 	
 	case "paymentprocessor":
@@ -1445,9 +1477,10 @@ switch($_GET['p']){
 				  <td>'.$naam.'</td>
 				  <td>'.$status.'</td>
 				  <td>'.date(FACTUUR_DATUM_FORMAT,$record['datum']).'</td>
-				  <td>[<a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'">edit</a>]
-				  [<a href="index.php?p=factuur_delete&factuurId='.$record['factuurId'].'">delete</a>]
-				  [<a href="index.php?p=factuur_sendnow&factuurId='.$record['factuurId'].'">verzend factuur</a>]
+				  <td class="right"><a href="index.php?p=factuur_delete&factuurId='.$record['factuurId'].'"><img src="images/delete.png" title="delete" /></a>
+				  <a href="index.php?p=factuur_sendnow&factuurId='.$record['factuurId'].'"><img src="images/resendmail.png" title="resend invoice" /></a>
+				  <a href="index.php?p=factuur_reprint&factuurId='.$record['factuurId'].'"><img src="images/print.png" title="reprint invoice" /></a>
+				  <a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'"><img src="images/edit.png" title="edit" /></a>
 				  </td>
 				</tr>';
 			}
@@ -1553,7 +1586,11 @@ switch($_GET['p']){
 				  <td>'.$fact->displayMoney($record['bedrag']).'</td>
 				  <td>'.$fact->displayMoney($excl).'</td>
 				  <td>'.$fact->displayMoney($btw).'</td>
-				  <td>[<a href="index.php?p=factuur_resend&factuurId='.$record['factuurId'].'">resend factuur</a>] [<a href="index.php?p=factuur_betaal&factuurId='.$record['factuurId'].'">betaald</a>] [<a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'">edit</a>]</td>
+				  <td class="right"><a href="index.php?p=factuur_betaal&factuurId='.$record['factuurId'].'"><img src="images/money.png" title="invoice payed" /></a>
+				  <a href="index.php?p=factuur_sendnow&factuurId='.$record['factuurId'].'"><img src="images/resendmail.png" title="resend invoice" /></a>
+				  <a href="index.php?p=factuur_reprint&factuurId='.$record['factuurId'].'"><img src="images/print.png" title="reprint invoice" /></a>
+				  <a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'"><img src="images/edit.png" title="edit" /></a>
+				  </td>
 				</tr>';
 			}
 			
@@ -1653,7 +1690,8 @@ switch($_GET['p']){
 				  <td>'.$fact->DisplayMoney($record['bedrag']).'</td>
 				  <td>'.$fact->DisplayMoney($excl).'</td>
 				  <td>'.$fact->DisplayMoney($btw).'</td>
-				  <td>[<a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'">edit</a>]</td>
+				  <td class="right"><a href="index.php?p=factuur_reprint&factuurId='.$record['factuurId'].'"><img src="images/print.png" title="reprint invoice" /></a>
+				  <a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'"><img src="images/edit.png" title="edit" /></a></td>
 				</tr>';
 			}
 			
@@ -1766,7 +1804,8 @@ switch($_GET['p']){
 				  <td>'.$fact->DisplayMoney($record['bedrag']).'</td>
 				  <td>'.$fact->DisplayMoney($excl).'</td>
 				  <td>'.$fact->DisplayMoney($btw).'</td>
-				  <td>[<a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'">edit</a>]</td>
+				  <td class="right"><a href="index.php?p=factuur_reprint&factuurId='.$record['factuurId'].'"><img src="images/print.png" title="reprint invoice" /></a>
+				  <a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'"><img src="images/edit.png" title="edit" /></a></td>
 				</tr>';
 			}
 			
@@ -1877,7 +1916,8 @@ switch($_GET['p']){
 					  <td>'.$fact->DisplayMoney($record['bedrag']).'</td>
 					  <td>'.$fact->DisplayMoney($excl).'</td>
 					  <td>'.$fact->DisplayMoney($btw).'</td>
-					  <td>[<a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'">edit</a>]</td>
+					  <td class="right"><a href="index.php?p=factuur_reprint&factuurId='.$record['factuurId'].'"><img src="images/print.png" title="reprint invoice" /></a>
+				  	  <a href="index.php?p=beheer_factuur&factuurId='.$record['factuurId'].'"><img src="images/edit.png" title="edit" /></a></td>
 					</tr>';
 			}
 			
@@ -1904,6 +1944,27 @@ switch($_GET['p']){
 			  </tr>
 			  <tr>
 				<td colspan="2">De factuur is verzonden.<br /><br />
+				Klik <a href="index.php?p=facturen">hier</a> om naar het overzicht van de facturen terug te gaan.</td>
+			  </tr>
+			</table>';
+		}
+	break;
+	
+	case "factuur_reprint":
+		$fact->notAllowed('99');
+		
+		if($fact->reprint_factuur($_GET['factuurId'])){
+			echo '<table width="100%" border="0" cellspacing="0" cellpadding="1">
+			  <tr>
+				<td width="50%">Factuur staat in de print queue</td>
+				<td align="right">&nbsp;</td>
+			  </tr>
+			  <tr>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			  </tr>
+			  <tr>
+				<td colspan="2">De factuur is toegevoegd aan de print queue.<br /><br />
 				Klik <a href="index.php?p=facturen">hier</a> om naar het overzicht van de facturen terug te gaan.</td>
 			  </tr>
 			</table>';
