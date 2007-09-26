@@ -20,9 +20,9 @@ body {
 {#LOGO#}<br /><br />
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td width="35%" valign="top"><table width="100%"  border="0" cellspacing="0" cellpadding="0">
+    <td width="27%" valign="top"><table width="100%"  border="0" cellspacing="0" cellpadding="0">
         <tr>
-          <td width="35%">Factuurnummer:</td>
+          <td width="50%">Factuurnummer:</td>
           <td>{#INVOICEPREPEND#}{#FACTUURID#}</td>
         </tr>
         <tr>

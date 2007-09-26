@@ -175,3 +175,15 @@ INSERT INTO `paymentLogActions` (`actionId`, `action`, `positive`) VALUES
 (10, 'Stornation', 2),
 (11, 'Stornation failure', 0),
 (12, 'Single payment by accountnumber', 1);
+
+-- 
+-- Table structure for table `printQueue`
+-- 
+
+CREATE TABLE `printQueue` (
+  `queueId` int(11) NOT NULL auto_increment,
+  `print` text NOT NULL,
+  `times` smallint(6) NOT NULL,
+  `printed` smallint(1) NOT NULL default '0',
+  PRIMARY KEY  (`queueId`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
