@@ -81,7 +81,7 @@ class Processor
 	
 	public function matchSingleInvoice ($invoiceId, $amount)
 	{
-		$query = "SELECT invoiceID, bedrag AS amount
+		$query = "SELECT factuurId, bedrag AS amount
 		FROM factuur WHERE factuurId = '".mysql_real_escape_string($invoiceId)."' LIMIT 1";
 		$query = mysql_query($query) or die (mysql_error());
 		
