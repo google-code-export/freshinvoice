@@ -566,7 +566,7 @@ class factuur {
 		$mail = new FIMailer();
 		$mail->Subject  = 'Stornatie factuur '.INVOICEPREPEND.$record['factuurId'].' '.BEDRIJFSNAAM;
 		$mail->Body    	= $text;
-		$this->AddAddress(MAILADDR, FROMNAME); // CC TO ME
+		$mail->AddAddress(MAILADDR, FROMNAME); // CC TO ME
 		$mail->AddAddress($record['mail'], $klantnaam);
 		
 		if(!$mail->Send()){
@@ -603,7 +603,7 @@ class factuur {
 		$mail = new FIMailer();
 		$mail->Subject  = 'Factuur '.INVOICEPREPEND.$record['factuurId'].' '.BEDRIJFSNAAM;
 		$mail->Body    	= $text;
-		$this->AddAddress(MAILADDR, FROMNAME); // CC TO ME
+		$mail->AddAddress(MAILADDR, FROMNAME); // CC TO ME
 		$mail->AddAddress($record['mail'], $klantnaam); // SEND TO CLIENT
 		
 		if(!$mail->Send()){
