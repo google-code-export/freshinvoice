@@ -5,6 +5,9 @@
 - Added icons to replace the text
 - Added a printqueue for invoices
 - Added a incasso overview page
+- Added upgrade.php for easier upgrades
+- Renewed the config.sample.inc.php, added settings
+- Renewed the factuur.sample.tpl.php to include a INVOICEPREPEND for the payment processor
 
 21 july 2006 version 1.1.1
 - catagorie delete bug
