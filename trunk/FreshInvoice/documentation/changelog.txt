@@ -1,4 +1,8 @@
-11 Oktober 2007 version 1.2.0
+11 Oktober 2007 version 1.2.1
+- Fixed a bug in the payment processor: added a round(bedrag, 2)
+- Updated the changelog
+
+8 Oktober 2007 version 1.2.0
 - Payment processor, to process your bankstatement
 - Add bank account numbers to your customers
 - Cleaned up some code in factuur.class.php (FIMailer)
