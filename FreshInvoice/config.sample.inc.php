@@ -34,7 +34,7 @@ define("LENGTE_CATEGORIEEN_SELECT_BOX", 		"5");
 // FACTUUR OPTIES
 define("FACTUUR_LOGO", 			'<a href="http://www.freshway.biz"><img src="http://www.freshway.biz/logo.jpg" width="257" height="88" border="0"></a>');
 define("FACTUUR_DATUM_FORMAT",  'd/m/Y'); //www.php.net/date
-define("VERSION", '1.2.0');
+define("VERSION", '1.2.1');
 
 $btwTarrieven	= array('19.0','20.0','6.0','0.0');
 
