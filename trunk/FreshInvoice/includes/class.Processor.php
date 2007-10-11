@@ -81,7 +81,7 @@ class Processor
 	
 	public function matchSingleInvoice ($invoiceId, $amount)
 	{
-		$query = "SELECT factuurId, bedrag AS amount
+		$query = "SELECT factuurId, ROUND(bedrag,2) AS amount
 		FROM factuur WHERE factuurId = '".mysql_real_escape_string($invoiceId)."' LIMIT 1";
 		$query = mysql_query($query) or die (mysql_error());
 		
@@ -126,7 +126,7 @@ class Processor
 	
 	public function matchByAccountNumber ($accountNumber, $amount)
 	{
-		$query = "SELECT factuurId, bedrag AS amount FROM
+		$query = "SELECT factuurId, ROUND(bedrag,2) AS amount FROM
 		factuur f, klant_rekeningnummer k
 		WHERE k.klantId=f.klantId AND
 		k.nummer = '".mysql_real_escape_string($accountNumber)."' AND

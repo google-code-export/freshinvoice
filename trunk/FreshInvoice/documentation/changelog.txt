@@ -1,3 +1,11 @@
+11 Oktober 2007 version 1.2.0
+- Payment processor, to process your bankstatement
+- Add bank account numbers to your customers
+- Cleaned up some code in factuur.class.php (FIMailer)
+- Added icons to replace the text
+- Added a printqueue for invoices
+- Added a incasso overview page
+
 21 july 2006 version 1.1.1
 - catagorie delete bug
 - round bug invoice page
