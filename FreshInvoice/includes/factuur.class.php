@@ -660,17 +660,26 @@ class factuur {
 	
 	function delete_factuur($factuurId){
 		$query = "SELECT factuurId FROM factuur WHERE betaald='N' AND factuurId='".$factuurId."'";
-		$query = mysql_query($query) or die (mysql_error());
+        $query = mysql_query($query) or die (mysql_error());
 		if(mysql_num_rows($query)==1){
 			$queryd = "DELETE FROM factuur WHERE betaald='N' AND factuurId='".$factuurId."'";
 			mysql_query($queryd) or die (mysql_error());
-			
-			$queryd = "DELTE FROM koppel_factuur_artikelen WHERE factuurId='".$factuurId."'";
-			@mysql_query($queryd);
-			
-			return TRUE;
-		}		
-	}
+
+			$queryd = "DELETE FROM koppel_factuur_artikelen WHERE factuurId=$factuurId";
+			mysql_query($queryd) or die (mysql_error());
+
+			//factuur nummer aanpassen na delete factuur (prosolit.nl)
+			$queryd = "SELECT MAX(factuurId)+1 AS factuurId FROM factuur";
+			$queryd = mysql_query($queryd) or die (mysql_error());
+			$record = mysql_fetch_array($queryd) or die (mysql_error());
+			$queryd = "ALTER TABLE factuur AUTO_INCREMENT=".$record['factuurId'];
+			mysql_query($queryd) or die (mysql_error());
+			//factuur nummer aanpassen na delete factuur
+			return true;
+		}
+                
+		return false;
+	} 
 	
 	function DisplayMoney ($kosten){
 		return '&euro; '.number_format($kosten, 2, ",", ".");
