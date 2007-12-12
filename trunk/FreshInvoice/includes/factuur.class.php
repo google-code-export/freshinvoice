@@ -578,6 +578,20 @@ class factuur {
 		return TRUE;
 	}
 	
+	function isFactuurBetaald ($factuurId)
+	{
+		$query = "SELECT betaald FROM factuur WHERE factuurId='".mysql_real_escape_string($factuurId)."'";
+		$query = mysql_query($query) or die (mysql_error());
+		$record = mysql_fetch_array($query);
+		
+		if($record['betaald']=='Y')
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
 	function factuur_betaald ($factuurId){
 		$query = "UPDATE factuur SET betaald='Y', betaald_datum='".time()."' WHERE factuurId='".$factuurId."'";
 		mysql_query($query) or die (mysql_error());
