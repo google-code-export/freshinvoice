@@ -149,7 +149,13 @@ class Processor
 		if($invoiceID=="") return false;
 		
 		$fact = new factuur();
-		return $fact->factuur_betaald($invoiceID);
+		
+		if(!$fact->isFactuurBetaald($invoiceID))
+		{
+			return $fact->factuur_betaald($invoiceID);
+		}
+		
+		return false;
 	}
 	
 	public function doStornation ($invoiceID)
