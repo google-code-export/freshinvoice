@@ -34,7 +34,13 @@ define("LENGTE_CATEGORIEEN_SELECT_BOX", 		"5");
 // FACTUUR OPTIES
 define("FACTUUR_LOGO", 			'<a href="http://www.freshway.biz"><img src="http://www.freshway.biz/logo.jpg" width="257" height="88" border="0"></a>');
 define("FACTUUR_DATUM_FORMAT",  'd/m/Y'); //www.php.net/date
-define("VERSION", '1.2.1');
+define("VERSION", '1.2.2');
+
+// SMARTY
+define("TPLDIR",		PATH."templates/");
+define("COMPILEDIR",	PATH."templates_c/");
+define("CACHEDIR",		PATH."cache/");
+define("CONFIGSDIR",	PATH."configs/");
 
 $btwTarrieven	= array('19.0','20.0','6.0','0.0');
 
@@ -157,14 +163,11 @@ $landen = array('Afghanistan','Albania','Algeria','Andorra',
 mysql_connect(DB_HOSTNAME,DB_USERNAME,DB_PASSWORD);
 mysql_select_db(DB_DATABASE);
 
-function __autoload($class_name) {
-
+function __autoload($class_name)
+{
 	if (file_exists(PATH.'includes/class.'.$class_name.'.php'))
-
 	{
-
 		require_once PATH.'includes/class.'.$class_name.'.php';
-
 	}
 }
 
@@ -173,6 +176,8 @@ if(!class_exists('SMTP')) include_once(PATH.'includes/class.smtp.php');
 if(!class_exists('FIMailer')) include_once(PATH.'includes/class.fimailer.php');
 if(!class_exists('Services_JSON')) include_once(PATH.'includes/class.JSON.php');
 if(!class_exists('Manager')) include_once(PATH.'includes/class.Manager.php');
+if(!class_exists('Smarty')) include_once(PATH.'includes/Smarty/Smarty.class.php');
+if(!class_exists('factuur')) include_once(PATH.'includes/factuur.class.php');
 
 session_set_cookie_params(time()+(60*60*24*365), '/', '.'.DOMAIN);
 session_start();
