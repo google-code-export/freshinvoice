@@ -788,9 +788,8 @@ class factuur {
 			return TRUE;
 		}elseif($neededLevel<$_SESSION['usergroup']){
 			return TRUE;
-		}else{
-			return FALSE;
 		}
+		return FALSE;
 	}
 	
 	function logout(){

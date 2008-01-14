@@ -1,71 +1,52 @@
-.big {
-	font-family: Tahoma;
-	font-size: 14px;
-	font-weight: bold;
-}
-body tr td {
-	font-family: Tahoma;
+body {
+    font-family: Tahoma;
 	font-size: 12px;
-	padding: 2px 5px 2px 5px;
+    background-color: #f9f9f9;
+    color: #000;
+    margin: 0;
+    padding: 0;
 }
-a:link.bold {
-	font-family: Tahoma;
-	font-size: 12px;
-	font-weight: bold;
-	color: #000000;
-	text-decoration: none;
+
+#menu {
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	width: 190px;
+	background-color: #FFF;
+	border: 1px solid grey;
+	padding: 0px 5px 5px 5px;
 }
-a:visited.bold {
-	font-family: Tahoma;
-	font-size: 12px;
-	font-weight: bold;
-	text-decoration: none;
-	color: #000000;
+
+#menu ul { padding: 0px 0px 0px 15px; margin: 0; }
+
+#content {
+	position: absolute;
+	top: 5px;
+	left: 210px;
+	width: 800px;
+	background-color: #FFF;
+	border: 1px solid grey;
+	padding: 0px 5px 5px 5px;
 }
-a:hover.bold {
-	font-family: Tahoma;
-	font-size: 12px;
-	font-weight: bold;
-	text-decoration: underline;
-	color: #000000;
+
+div h1 {
+	font-size: 150%;
+    font-weight: bold;
+    margin: 0;
+    padding: 3px 3px 3px 3px;
+    border-bottom: 1px solid #aaaaaa;
 }
-a:active.bold {
-	font-family: Tahoma;
-	font-size: 12px;
-	font-weight: bold;
-	text-decoration: none;
-	color: #000000;
-}
-a:link {
-	font-family: Tahoma;
-	font-size: 12px;
-	color: #000000;
-	text-decoration: underline;
-}
-a:visited {
-	font-family: Tahoma;
-	font-size: 12px;
-	text-decoration: underline;
-	color: #000000;
-}
-a:hover {
-	font-family: Tahoma;
-	font-size: 12px;
-	text-decoration: none;
-	color: #000000;
-}
-a:active {
-	font-family: Tahoma;
-	font-size: 12px;
-	text-decoration: underline;
-	color: #000000;
-}
-a img {
-	border: none;
-}
-br.pagebreak {
-	page-break-after: always;
-}
-td.right {
-	text-align: right;
-}
+
+a:link.bold { font-weight: bold; text-decoration: none; color: #000000; }
+a:visited.bold { font-weight: bold; text-decoration: none; color: #000000; }
+a:hover.bold { font-weight: bold; text-decoration: underline; color: #000000; }
+a:active.bold { font-weight: bold; text-decoration: none; color: #000000; }
+
+a:link { color: #000000; text-decoration: underline; }
+a:visited { text-decoration: underline; color: #000000; }
+a:hover { text-decoration: none; color: #000000; }
+a:active { text-decoration: underline; color: #000000; }
+a img { border: none; }
+
+br.pagebreak { page-break-after: always; }
+td.right { text-align: right; }
