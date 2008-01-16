@@ -1,12 +1,12 @@
 <?
 class FreshSmarty extends Smarty
 {
-	public function FreshSmarty () 
+	public function FreshSmarty ($fact) 
 	{
-		$this->__construct();
+		$this->__construct($fact);
 	}
 	
-	public function __construct()
+	public function __construct($fact)
 	{
 		$this->template_dir = TPLDIR;
 		$this->compile_dir = COMPILEDIR;
@@ -15,6 +15,10 @@ class FreshSmarty extends Smarty
 		
 		$this->compile_check = true;
 		$this->debugging = false;
+		
+		$this->assign("allowed", $_SESSION['usergroup']);
+		$this->assign("loggedIn", $fact->isLoggedIn());
+		$this->assign("bedrijfsnaam", BEDRIJFSNAAM);
 	}
 }
 ?>

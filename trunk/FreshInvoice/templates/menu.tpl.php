@@ -1,35 +1,41 @@
 <h1>Menu</h1>
 <ul>
-	<li><a href="index.php?p=home" target="mainFrame">home</a></li>
+	<li><a href="index.php?p=home">home</a></li>
 	{if $allowed >= 1 }
-		<li><a href="index.php?p=bekijk_facturen" target="mainFrame">facturen bekijken</a></li>
-		<li><a href="index.php?p=persoonsgegevens" target="mainFrame">persoonsgegevens</a></li>
+		<li><a href="index.php?p=bekijk_facturen">view invoices</a></li>
+		<li><a href="index.php?p=persoonsgegevens">persoonsgegevens</a></li>
 	{/if}
-	<li><a href="index.php?p=logout" target="mainFrame">logout</a></li>
+	
+	{if $loggedIn == true }
+		<li><a href="index.php?p=logout">logout</a></li>
+	{else}
+		<li><a href="index.php?p=nieuwe_klant">become a client</a></li>
+		<li><a href="index.php?p=login">login</a></li>
+	{/if}
 </ul>
 
 {if $allowed >= 99 }
 <h1>Admin functies</h1>
 <ul>
-	<li><a href="index.php?p=beheer_categorieen" target="mainFrame">categorieen beheren</a></li>
-	<li><a href="index.php?p=add_categorie" target="mainFrame">categorie invoegen</a></li>
-	<li><a href="index.php?p=beheer_artikelen" target="mainFrame">artikelen beheren</a></li>
-	<li><a href="index.php?p=add_artikel" target="mainFrame">artikel invoegen</a></li>
-	<li><a href="index.php?p=klantenlijst" target="mainFrame">klantenlijst</a></li>
-	<li><a href="index.php?p=facturen" target="mainFrame">facturen</a></li>
-	<li><a href="index.php?p=incasso_overzicht" target="mainFrame">incasso overzicht</a></li>
-	<li><a href="index.php?p=paymentprocessor" target="mainFrame">payment processor</a></li>
-	<li><a href="index.php?p=paymentsgood" target="mainFrame">goede betalingen</a></li>
-	<li><a href="index.php?p=paymentswrong" target="mainFrame">foute betalingen</a></li>
-	<li><a href="index.php?p=stornations" target="mainFrame">stornaties</a></li>
-	<li><a href="index.php?p=stornationswrong" target="mainFrame">foute stornaties</a></li>
-	<li><a href="index.php?p=paymentaandacht" target="mainFrame">aandacht betalingen</a></li>
-	<li><a href="index.php?p=paymentsearch" target="mainFrame">betalingen zoeken</a></li>
-	<li><a href="index.php?p=factuur_vorig_kwartaal" target="mainFrame">vorig kwartaal</a></li>
-	<li><a href="index.php?p=factuur_alles" target="mainFrame">alle facturen</a></li>
-	<li><a href="index.php?p=binnenkort_verlopen" target="mainFrame">binnenkort verlopen</a></li>
-	<li><a href="index.php?p=maak_factuur" target="mainFrame">factuur maken</a></li>
-	<li><a href="index.php?p=printQueue" target="mainFrame">print queue</a></li>
-	<li><a href="index.php?p=version" target="mainFrame">versie</a></li>
+	<li><a href="index.php?p=beheer_categorieen">categorieen beheren</a></li>
+	<li><a href="index.php?p=add_categorie">categorie invoegen</a></li>
+	<li><a href="index.php?p=beheer_artikelen">artikelen beheren</a></li>
+	<li><a href="index.php?p=add_artikel">artikel invoegen</a></li>
+	<li><a href="index.php?p=klantenlijst">klantenlijst</a></li>
+	<li><a href="index.php?p=facturen">facturen</a></li>
+	<li><a href="index.php?p=incasso_overzicht">incasso overzicht</a></li>
+	<li><a href="index.php?p=paymentprocessor">payment processor</a></li>
+	<li><a href="index.php?p=paymentsgood">goede betalingen</a></li>
+	<li><a href="index.php?p=paymentswrong">foute betalingen</a></li>
+	<li><a href="index.php?p=stornations">stornaties</a></li>
+	<li><a href="index.php?p=stornationswrong">foute stornaties</a></li>
+	<li><a href="index.php?p=paymentaandacht">aandacht betalingen</a></li>
+	<li><a href="index.php?p=paymentsearch">betalingen zoeken</a></li>
+	<li><a href="index.php?p=factuur_vorig_kwartaal">vorig kwartaal</a></li>
+	<li><a href="index.php?p=factuur_alles">alle facturen</a></li>
+	<li><a href="index.php?p=binnenkort_verlopen">binnenkort verlopen</a></li>
+	<li><a href="index.php?p=maak_factuur">factuur maken</a></li>
+	<li><a href="index.php?p=printQueue">print queue</a></li>
+	<li><a href="index.php?p=version">versie</a></li>
 </ul>
 {/if}
