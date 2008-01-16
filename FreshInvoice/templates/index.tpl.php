@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>FreshInvoice</title>
+<title>Factuursysteem {$bedrijfsnaam}</title>
 <link type="text/css" rel="stylesheet" href="./style.css" />
 <script type="text/javascript" language="JavaScript1.2" src="./js/prototype.js"> </script>
 <script type="text/javascript" language="JavaScript1.2" src="./js/funct.js"> </script>

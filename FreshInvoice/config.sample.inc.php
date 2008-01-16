@@ -179,6 +179,8 @@ if(!class_exists('Manager')) include_once(PATH.'includes/class.Manager.php');
 if(!class_exists('Smarty')) include_once(PATH.'includes/Smarty/Smarty.class.php');
 if(!class_exists('factuur')) include_once(PATH.'includes/factuur.class.php');
 
+$fact = new factuur();
+
 session_set_cookie_params(time()+(60*60*24*365), '/', '.'.DOMAIN);
 session_start();
 ?>
