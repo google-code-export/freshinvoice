@@ -16,6 +16,13 @@ switch($_GET['p']){
 		$fs->display('index.tpl.php');
 	break;
 	
+	case "lytebox":
+		$fs = new FreshSmarty($fact);
+		$fs->assign("message", $_GET['message']);
+		$fs->assign("messagetext", $_GET['messagetext']);
+		$fs->display('lytebox.tpl.php');
+	break;
+	
 	case "forgotmypass":
 		$fs = new FreshSmarty($fact);
 		$fs->assign("tpl_name", "forgotpassword");
@@ -25,18 +32,11 @@ switch($_GET['p']){
 	case "doForgotPassword":
 		if($fact->forgotmypassword($_POST['emailadres']))
 		{
-			echo '<table width="100%"  border="0" cellspacing="0" cellpadding="1">
-			  <tr>
-				<td width="50%">Passwoord vergeten</td>
-				<td>&nbsp;</td>
-			  </tr>
-			  <tr>
-				<td colspan="2">&nbsp;</td>
-			  </tr>
-			  <tr>
-				<td colspan="2">Er is een nieuw wachtwoord naar uw e-mail adres verstuurd.</td>
-			  </tr>
-			</table>';
+			$fs = new FreshSmarty($fact);
+			$fs->assign("message", "forgotpass");
+			$fs->assign("messagetext", "forgotpassdone");
+			$fs->assign("tpl_name", "message");
+			$fs->display('index.tpl.php');
 		}
 	break;
 	

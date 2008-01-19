@@ -55,5 +55,5 @@ td.right { text-align: right; }
 .freshform fieldset { padding:10px; }
 .freshform legend { font-weight:bold; font-size:9pt; }
 .freshform label { display:block; height:2em; background-color:#E7E7E7; padding:10px 10px 0; }
-.freshform input { margin-right:20px; border:1px solid #999999; float:right; clear:right; background:#CCCCCC; }
+.freshform input, select { margin-right:20px; border:1px solid #999999; float:right; clear:right; background:#CCCCCC; }
 .freshform input:focus,.freshform input:hover { border:1px solid #333333; }

@@ -36,7 +36,7 @@ class FreshSmarty extends Smarty
 		}
 		
 		/* ASSIGN THE SMARTY LANG */
-		$smarty->assign("lang", $lang); 
+		$this->assign("lang", $lang); 
 	}
 }
 ?>
