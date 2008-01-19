@@ -1,8 +1,5 @@
 <?
 include_once('config.inc.php');
-include_once(PATH.'includes/factuur.class.php');
-
-$fact = new factuur;
 
 $fact->auto_herhaal('jaar');
 $fact->auto_herhaal('halfjaar');
