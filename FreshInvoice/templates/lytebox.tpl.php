@@ -3,17 +3,20 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>Factuursysteem {$bedrijfsnaam}</title>
-<link type="text/css" rel="stylesheet" href="./lytebox.css" />
 <link type="text/css" rel="stylesheet" href="./style.css" />
-<script type="text/javascript" language="JavaScript1.2" src="./js/lytebox.js"> </script>
 <script type="text/javascript" language="JavaScript1.2" src="./js/prototype.js"> </script>
 <script type="text/javascript" language="JavaScript1.2" src="./js/funct.js"> </script>
+
 </head>
 
 <body>
 
-<div id="menu">{include file='menu.tpl.php'}</div>
-<div id="content">{include file="$tpl_name.tpl.php"}</div>
+<form class="freshform">
+<fieldset>
+<legend>{$lang.$message}</legend>
+<p>{$lang.$messagetext}</p>
+</fieldset>
+</form>
 
 </body>
 </html>

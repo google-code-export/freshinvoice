@@ -36,3 +36,23 @@ function resultError (request)
 {
 	alert('Error ' + request.status + ' -- ' + request.statusText + ' -- ' + request.responseText);
 }
+
+var timeoutID = null;
+
+/* Must pass in the "anchors" ID so that Lytebox can call the correct "onclick" handler... */
+function loadLytebox(href, title) {
+    if (typeof myLytebox != 'undefined') {
+        // if the myLytebox object exists, start it up!
+        var a = document.createElement("a");
+        a.href = href;
+        a.rel = "lyteframe";
+        a.title = title;
+        a.rev = "width: 600px; height: 400px; scrolling: no;";
+        myLytebox.start( a, false, true);
+    } else {
+        // wait 1/10th of a second and attempt loading again...
+        if (timeoutID) { clearTimeout(timeoutID); }
+        timeoutID = setTimeout('loadLytebox("'+href+'", "'+title+'")', 100);
+    }
+    
+}
