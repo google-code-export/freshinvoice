@@ -703,11 +703,13 @@ class factuur {
 		return ' [ '.number_format($kosten, 2, ",", ".").' ] ';
 	}
 	
-	function login($mail, $password){
+	function login($mail, $password, $language){
 		if(!isset($mail)){
 			$this->error('Er is geen e-mail adres opgegeven');
 		}elseif(!isset($password)){
 			$this->error('Er is geen password opgegeven');
+		}elseif(!isset($language)){
+			$this->error('Er is geen taal opgegeven');
 		}else{
 			$query 	= "SELECT klantId, mail, password, usergroup, voornaam, tussenvoegsel, achternaam, factuur_opsparen
 			FROM klant WHERE mail='".$mail."'";
@@ -726,10 +728,11 @@ class factuur {
 			$_SESSION['klantId']	= $record['klantId'];
 			$_SESSION['mail']		= $record['mail'];
 			$_SESSION['usergroup']	= $record['usergroup'];
+			$_SESSION['language']	= $language;
 			if($record['tussenvoegsel']==''){
-				$_SESSION['naam'] 		= $record['voornaam'].' '.$record['achternaam'];
+				$_SESSION['naam'] 	= $record['voornaam'].' '.$record['achternaam'];
 			}else{
-				$_SESSION['naam'] 		= $record['voornaam'].' '.$record['tussenvoegsel'].' '.$record['achternaam'];
+				$_SESSION['naam'] 	= $record['voornaam'].' '.$record['tussenvoegsel'].' '.$record['achternaam'];
 			}
 			$_SESSION['opsparen'] 	= $record['factuur_opsparen'];
 			

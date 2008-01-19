@@ -1,126 +1,25 @@
 <?
 include_once('config.inc.php');
-include_once(PATH.'includes/factuur.class.php');
-
-$fact = new factuur;
-
-if($_GET['p']!='finish_factuur' &&
-$_GET['p']!='' &&
-$_GET['p']!='json_artikelen_per_cat' &&
-$_GET['p']!='display_factuur')
-{
-	include_once('templates/header.tpl.php');
-}
 
 switch($_GET['p']){
 	default:
-	
-	if($fact->isLoggedIn()){
-		// FRAMESET
+		$fs = new FreshSmarty($fact);
 		
-		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN"
-		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
-		<html>
-		<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title>Factuursysteem '.BEDRIJFSNAAM.'</title>
-		<link rel="stylesheet" href="'.URL.'style.css" type="text/css" />
-		<script type="text/javascript" language="JavaScript1.2" src="./js/prototype.js"> </script>
-		<script type="text/javascript" language="JavaScript1.2" src="./js/funct.js"> </script>
-		</head>
+		if($fact->isLoggedIn())
+		{
+			$fs->assign("tpl_name", "home");
+		}else
+		{
+			$fs->assign("tpl_name", "login");
+		}
 		
-		<frameset rows="*" cols="137,*" frameborder="no" border="0" framespacing="0">
-		<frame src="index.php?p=left_frame" name="leftFrame" scrolling="no" noresize="noresize" id="leftFrame" title="leftFrame" />
-		  <frameset rows="40,*" frameborder="no" border="0" framespacing="0">
-			<frame src="index.php?p=top_frame" name="topFrame" scrolling="no" noresize="noresize" id="topFrame" title="topFrame" />
-			<frame src="index.php?p=home" name="mainFrame" id="mainFrame" title="mainFrame" />
-		  </frameset>
-		</frameset>
-		
-		</html>';
-	}else{
-		// LOGIN FORMULIER
-		
-		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN"
-		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
-		<html>
-		<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title>Factuursysteem '.BEDRIJFSNAAM.'</title>
-		<link rel="stylesheet" href="'.URL.'style.css" type="text/css" />
-		<script type="text/javascript" language="JavaScript1.2" src="./js/prototype.js"> </script>
-		<script type="text/javascript" language="JavaScript1.2" src="./js/funct.js"> </script>
-		</head>
-		
-		<frameset rows="40,*" frameborder="no" border="0" framespacing="0">
-		  <frame src="index.php?p=top_frame" name="topFrame" scrolling="no" noresize="noresize" id="topFrame" title="topFrame" />
-		  <frame src="index.php?p=login" name="mainFrame" id="mainFrame" title="mainFrame" />
-		</frameset>
-		
-		</html>';
-	}
-	break;
-	
-	case "login":
-		echo '<form name="form1" method="post" action="index.php?p=doLogin" target="_parent">
-		<table width="100%"  border="0" cellspacing="0" cellpadding="1">
-		  <tr>
-			<td width="50%">Login</td>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td>E-mail adres:</td>
-			<td><input type="text" name="emailadres"></td>
-		  </tr>
-		  <tr>
-			<td>Password:</td>
-			<td><input type="password" name="password"></td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-			<td><input type="submit" name="Submit" value="Login"></td>
-		  </tr>
-		</table>
-		</form>';
-	break;
-	
-	case "top_frame":
-		$fact->nav();
+		$fs->display('index.tpl.php');
 	break;
 	
 	case "forgotmypass":
-		echo '<form name="form1" method="post" action="index.php?p=doForgotPassword">
-		<table width="100%"  border="0" cellspacing="0" cellpadding="1">
-		  <tr>
-			<td width="50%">Passwoord vergeten</td>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td>E-mail adres:</td>
-			<td><input type="text" name="emailadres"></td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-			<td><input type="submit" name="Submit" value="Opvragen"></td>
-		  </tr>
-		</table>
-		</form>';
+		$fs = new FreshSmarty($fact);
+		$fs->assign("tpl_name", "forgotpassword");
+		$fs->display('index.tpl.php');
 	break;
 	
 	case "doForgotPassword":
@@ -142,7 +41,7 @@ switch($_GET['p']){
 	break;
 	
 	case "doLogin":
-		if($fact->login($_POST['emailadres'], $_POST['password'])){
+		if($fact->login($_POST['emailadres'], $_POST['password'], $_POST['language'])){
 			echo '<table width="100%" border="0" cellspacing="0" cellpadding="1">
 			  <tr>
 				<td width="50%">Ingelogd</td>

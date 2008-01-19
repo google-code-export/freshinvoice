@@ -29,7 +29,7 @@ define("LENGTE_KLANTEN_SELECT_BOX", 			"20");
 define("LENGTE_ARTIKELEN_SELECT_BOX", 			"20");
 define("LENGTE_OPEN_FACTUREN_SELECT_BOX", 		"5");
 define("LENGTE_CATEGORIEEN_SELECT_BOX", 		"5");
-//define("LIJST_KLANTEN_PER_PAGINA", 				"40");
+define("LIJST_KLANTEN_PER_PAGINA", 				"40");
 
 // FACTUUR OPTIES
 define("FACTUUR_LOGO", 			'<a href="http://www.freshway.biz"><img src="http://www.freshway.biz/logo.jpg" width="257" height="88" border="0"></a>');
@@ -41,6 +41,9 @@ define("TPLDIR",		PATH."templates/");
 define("COMPILEDIR",	PATH."templates_c/");
 define("CACHEDIR",		PATH."cache/");
 define("CONFIGSDIR",	PATH."configs/");
+
+/* LOCALIZATION */
+define("DEFAULTLANG",	"english");
 
 $btwTarrieven	= array('19.0','20.0','6.0','0.0');
 
@@ -177,7 +180,7 @@ if(!class_exists('FIMailer')) include_once(PATH.'includes/class.fimailer.php');
 if(!class_exists('Services_JSON')) include_once(PATH.'includes/class.JSON.php');
 if(!class_exists('Manager')) include_once(PATH.'includes/class.Manager.php');
 if(!class_exists('Smarty')) include_once(PATH.'includes/Smarty/Smarty.class.php');
-if(!class_exists('factuur')) include_once(PATH.'includes/factuur.class.php');
+if(!class_exists('factuur')) include_once(PATH.'includes/class.factuur.php');
 
 $fact = new factuur();
 
