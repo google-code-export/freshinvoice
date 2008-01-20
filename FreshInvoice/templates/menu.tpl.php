@@ -9,7 +9,7 @@
 	{if $loggedIn == true }
 		<li><a href="index.php?p=logout">{$lang.logout}</a></li>
 	{else}
-		<li><a href="index.php?p=nieuwe_klant">{$lang.becomeclient}</a></li>
+		<li><a href="index.php?p=newClient">{$lang.becomeclient}</a></li>
 		<li><a href="index.php?p=login">{$lang.login}</a></li>
 		<li><a href="index.php?p=forgotmypass">{$lang.forgotpass}</a></li>
 	{/if}
