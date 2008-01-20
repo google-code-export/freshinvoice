@@ -41,146 +41,20 @@ switch($_GET['p']){
 	break;
 	
 	case "doLogin":
-		if($fact->login($_POST['emailadres'], $_POST['password'], $_POST['language'])){
-			echo '<table width="100%" border="0" cellspacing="0" cellpadding="1">
-			  <tr>
-				<td width="50%">Ingelogd</td>
-				<td>&nbsp;</td>
-			  </tr>
-			  <tr>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-			  </tr>
-			  <tr>
-				<td colspan="2">Welkom terug '.$_SESSION['naam'].'.<br />Een moment graag. U wordt naar ons hoofdmenu geleid...
-				<script language="javascript">
-				setTimeout("window.location.href=\'index.php\'", 4000);
-				</script></td>
-			  </tr>
-			</table>';
+		if($fact->login($_POST['emailadres'], $_POST['password'], $_POST['language']))
+		{
+			header("Location: index.php");
 		}
 	break;
 	
-	case "nieuwe_klant":
-	
-	echo '<form name="nieuwe_klant" method="post" action="index.php?p=do_nieuwe_klant">
-	<table width="100%" border="0" cellspacing="0" cellpadding="1">
-	  <tr>
-		<td width="50%">Nieuwe klant</td>
-		<td>&nbsp;</td>
-	  </tr>
-	  <tr>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-	  </tr>
-	  <tr>
-		<td>E-mail adres*</td>
-		<td><input type="text" name="emailadres"></td>
-	  </tr>
-	  <tr>
-		<td>Password*</td>
-		<td><input type="password" name="password1"></td>
-	  </tr>
-	  <tr>
-		<td>Password check* </td>
-		<td><input type="password" name="password2"></td>
-	  </tr>
-	  <tr>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-	  </tr>
-	  <tr>
-		<td>Voornaam*</td>
-		<td><input type="text" name="voornaam"></td>
-	  </tr>
-	  <tr>
-		<td>Tussenvoegsel</td>
-		<td><input type="text" name="tussenvoegsel"></td>
-	  </tr>
-	  <tr>
-		<td>Achternaam*</td>
-		<td><input type="text" name="achternaam"></td>
-	  </tr>
-	  <tr>
-		<td>Geslacht*</td>
-		<td><input name="geslacht" type="radio" value="M"> Man 
-		  <input name="geslacht" type="radio" value="V"> Vrouw</td>
-	  </tr>
-	  <tr>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-	  </tr>
-	  <tr>
-		<td>Bedrijfsnaam</td>
-		<td><input type="text" name="bedrijfsnaam"></td>
-	  </tr>
-	  <tr>
-		<td>Straat*</td>
-		<td><input type="text" name="straat"></td>
-	  </tr>
-	  <tr>
-		<td>Huisnummer*</td>
-		<td><input name="huisnummer" type="text" size="9"></td>
-	  </tr>
-	  <tr>
-		<td>Postcode en Plaats*</td>
-		<td><input name="postcode" type="text" size="9" maxlength="7">
-		  <input type="text" name="plaats"></td>
-	  </tr>
-	  <tr>
-		<td>Land*</td>
-		<td><select name="land">';
-			
-			foreach ($landen AS $land)
-			{
-				echo '<option>'.$land.'</option>';
-			}
-			
-			echo '</select></td>
-	  </tr>
-	  <tr>
-		<td>Telefoonnummer*</td>
-		<td><input type="text" name="telefoon"></td>
-	  </tr>
-	  <tr>
-		<td>Faxnummer</td>
-		<td><input type="text" name="fax"></td>
-	  </tr>
-	  <tr>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-	  </tr>
-	  <tr>
-		<td>BTW nummer (alleen voor bedrijven)</td>
-		<td><input type="text" name="BTWnummer"></td>
-	  </tr>
-	  <tr>
-		<td>Kamer van Koophandel nummer (alleen voor bedrijven)</td>
-		<td><input type="text" name="KVKnummer"> in <select name="KVKplaats">';
-			foreach($KVKplaatsen AS $plaats){
-				echo'<option>'.$plaats.'</option>'."\n";
-			}
-			echo'</select></td>
-	  </tr>
-	  <tr>
-		<td>Bedrijfsvorm (alleen voor bedrijven)</td>
-		<td><select name="bedrijfsvorm">';
-		    foreach($bedrijfsvormen AS $vorm){
-				echo'<option>'.$vorm.'</option>'."\n";
-			}
-			echo'</select></td>
-	  </tr>
-	  <tr>
-		<td>&nbsp;</td>
-		<td><input type="submit" name="Submit" value="Aanmelden"></td>
-	  </tr>
-	</table>
-	</form>';
-	
+	case "newClient":
+		$fs = new FreshSmarty($fact);
+		$fs->assign("tpl_name", "newclient");
+		$fs->assign("countries", $landen);
+		$fs->display('index.tpl.php');
 	break;
 	
-	case "do_nieuwe_klant":
-	
+	case "doNewClient":
 		if($fact->klant_invoegen ($_POST['emailadres'],$_POST['password1'],$_POST['password2'],$_POST['voornaam'],$_POST['tussenvoegsel'],$_POST['achternaam'],$_POST['geslacht'],$_POST['bedrijfsnaam'],$_POST['straat'],$_POST['huisnummer'],$_POST['postcode'],$_POST['plaats'],$_POST['land'],$_POST['telefoon'],$_POST['fax'],$_POST['BTWnummer'],$_POST['KVKnummer'],$_POST['KVKplaats'],$_POST['bedrijfsvorm'])){
 			echo '<table width="100%"  border="0" cellspacing="0" cellpadding="1">
 			  <tr>
