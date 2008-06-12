@@ -37,6 +37,7 @@ $lang['printqueue']			= "Print queue";
 $lang['version']			= "Version";
 $lang['newclient']			= "New client";
 $lang['newclienttext']		= "Please fill out your personal information.";
+$lang['clientwelcometext']	= "Welcome as a client at ".BEDRIJFSNAAM."<br /><br />You will find the required login details in you're emailbox.";
 $lang['passwordcheck']		= "Password check";
 $lang['firstname']			= "First name";
 $lang['middlename']			= "Middle name";
@@ -58,4 +59,6 @@ $lang['commerce']			= "Chamber of commerce number";
 $lang['commerceoffice']		= "Chamber of commerce office";
 $lang['at']					= "at";
 $lang['companytype']		= "Type of company";
+$lang['invoicelist']		= "Invoice list";
+$lang['captcha']			= "CAPTCHA; Proof that you are human";
 ?>

@@ -22,7 +22,10 @@
 <label><input type="text" name="KVKnummer" />{$lang.commerce} ({$lang.companyonly}):</label>
 <label><input type="text" name="KVKplaats" />{$lang.commerceoffice} ({$lang.companyonly}):</label>
 <label><input type="text" name="bedrijfsvorm" />{$lang.companytype} ({$lang.companyonly}):</label>
+{$reCAPTCHA}
+<div class="clear"></div>
 
 <label for="submit">
     <input name="submit" type="submit" id="submit" tabindex="3" value="{$lang.newclient}" />
 </label>
+

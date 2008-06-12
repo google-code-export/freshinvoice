@@ -240,7 +240,12 @@ class factuur {
 		if(!isset($klantId)){
 			$this->error('Er is geen klantId opgegeven');
 		}else{
-			$query = "INSERT INTO factuur (klantId,datum,dag,maand,jaar) VALUES ('".$klantId."','".time()."','".date('d')."','".date('m')."','".date('Y')."')";
+			$query = "SELECT max(factuurId) AS factuurId FROM factuur";
+			$query = mysql_query($query) or die (mysql_error());
+			$record = mysql_fetch_assoc($query);
+			$factuurId = $record['factuurId']+1;
+			
+			$query = "INSERT INTO factuur (factuurId,klantId,datum,dag,maand,jaar) VALUES ('".$factuurId."','".$klantId."','".time()."','".date('d')."','".date('m')."','".date('Y')."')";
 			mysql_query($query) or die (mysql_error());
 			
 			return mysql_insert_id();
@@ -407,6 +412,8 @@ class factuur {
 		$count = 0;
 		if(mysql_num_rows($query)>0){
 			while($record=mysql_fetch_array($query)){
+				if($sumfactuur=='Y') $this->reset_invoice_date($record['factuurId']);
+				
 				// CREATE THE INVOICE
 				$content = $this->finish_factuur($record['factuurId'], 'WRITE');
 				
@@ -421,6 +428,14 @@ class factuur {
 				$count++;
 			}
 		}
+	}
+	
+	function reset_invoice_date ($factuurId)
+	{
+		$query = "UPDATE `factuur` SET `datum` = UNIX_TIMESTAMP() ,
+		`dag` = '".date("d")."', `maand` = '".date("m")."', `jaar` = '".date("Y")."'
+		WHERE `factuur`.`factuurId` = '".mysql_real_escape_string($factuurId)."' LIMIT 1 ;";
+		mysql_query($query) or die (mysql_error());
 	}
 	
 	function sendnow_factuur ($factuurId){
