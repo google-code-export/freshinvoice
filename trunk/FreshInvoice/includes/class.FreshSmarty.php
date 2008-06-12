@@ -8,6 +8,8 @@ class FreshSmarty extends Smarty
 	
 	public function __construct($fact)
 	{
+		global $lang;
+		
 		/* STANDARD SMARTY VARS */
 		$this->template_dir = TPLDIR;
 		$this->compile_dir = COMPILEDIR;
@@ -23,17 +25,6 @@ class FreshSmarty extends Smarty
 		
 		/* STANDARD SETTINGS */
 		$this->assign("bedrijfsnaam", BEDRIJFSNAAM);
-		
-		/* LOCALIZATION */
-		if(!$_SESSION['language']) $_SESSION['language'] = DEFAULTLANG;
-		
-		if(@file_exists("localization/".$_SESSION['language'].".lang.php"))
-		{
-			include_once("localization/".$_SESSION['language'].".lang.php");
-		}else
-		{
-			include_once("localization/english.lang.php");
-		}
 		
 		/* ASSIGN THE SMARTY LANG */
 		$this->assign("lang", $lang); 

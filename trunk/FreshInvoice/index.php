@@ -51,28 +51,38 @@ switch($_GET['p']){
 		$fs = new FreshSmarty($fact);
 		$fs->assign("tpl_name", "newclient");
 		$fs->assign("countries", $landen);
+		
+		if(RECAPTCHA_PUBLICKEY!="" && RECAPTCHA_PRIVATEKEY!="")
+		{
+			$fs->assign("reCAPTCHA", '<label><div id="captcha">'.recaptcha_get_html(RECAPTCHA_PUBLICKEY, $_SESSION['error']).'</div><div id="captchalabel">'.$lang['captcha'].':</div></label>');
+		}else
+		{
+			$fs->assign("reCAPTCHA", "");
+		}
+		
 		$fs->display('index.tpl.php');
 	break;
 	
 	case "doNewClient":
+		if (RECAPTCHA_PUBLICKEY!="" && RECAPTCHA_PRIVATEKEY!="") {
+        	$resp = recaptcha_check_answer (RECAPTCHA_PRIVATEKEY,
+            	$_SERVER["REMOTE_ADDR"],
+                $_POST["recaptcha_challenge_field"],
+                $_POST["recaptcha_response_field"]);
+                
+        		if (!$resp->is_valid) {
+            		# set the error code so that we can display it
+            		echo $resp->error;
+            		exit;
+        		}
+		}
+		
 		if($fact->klant_invoegen ($_POST['emailadres'],$_POST['password1'],$_POST['password2'],$_POST['voornaam'],$_POST['tussenvoegsel'],$_POST['achternaam'],$_POST['geslacht'],$_POST['bedrijfsnaam'],$_POST['straat'],$_POST['huisnummer'],$_POST['postcode'],$_POST['plaats'],$_POST['land'],$_POST['telefoon'],$_POST['fax'],$_POST['BTWnummer'],$_POST['KVKnummer'],$_POST['KVKplaats'],$_POST['bedrijfsvorm'])){
-			echo '<table width="100%"  border="0" cellspacing="0" cellpadding="1">
-			  <tr>
-				<td width="50%">Nieuwe klant</td>
-				<td>&nbsp;</td>
-			  </tr>
-			  <tr>
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
-			  </tr>
-			  <tr>
-				<td colspan="2">Welkom als nieuwe klant bij '.BEDRIJFSNAAM.',<br>
-				  <br>
-				  Op het door uw opgegeven e-mail adres vindt u uw login gegevens. Daarmee kunt u <a href="index.php?p=login" target="mainFrame">hier</a> inloggen.<br>
-				  <br>'.nl2br(AFSLUITING).'
-				  </td>
-			  </tr>
-			</table>';
+			$fs = new FreshSmarty($fact);
+			$fs->assign("message", "newclient");
+			$fs->assign("messagetext", "clientwelcometext");
+			$fs->assign("tpl_name", "message");
+			$fs->display('index.tpl.php');
 		}
 	
 	break;
@@ -80,111 +90,6 @@ switch($_GET['p']){
 	//**************************************************************//
 	//			NEED TO BE LOGGED IN UNDERNEAT THIS LINE			//
 	//**************************************************************//
-	
-	case "left_frame":
-		$fact->notAllowed();
-		
-		echo '<table width="99%"  border="0" cellspacing="0" cellpadding="0" align="center">
-		  <tr bgcolor="#CCCCCC">
-			<td class="big">Menu</td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td><a href="index.php?p=home" target="mainFrame">home</a></td>
-		  </tr>';
-		
-		// KLANT FUNCTIONS
-		if($fact->allowed('1')){
-			echo '<tr>
-				<td><a href="index.php?p=bekijk_facturen" target="mainFrame">facturen bekijken</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=persoonsgegevens" target="mainFrame">persoonsgegevens</a></td>
-			  </tr>';
-		}
-		
-		echo '<tr>
-			<td><a href="index.php?p=logout" target="mainFrame">logout</a></td>
-		  </tr>';
-		
-		// ADMIN FUNCTIONS
-		if($fact->allowed('99')){
-			echo '<tr>
-				<td>&nbsp;</td>
-			  </tr>
-			  <tr bgcolor="#CCCCCC">
-				<td class="big">Admin functies</td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=beheer_categorieen" target="mainFrame">categorieen beheren</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=add_categorie" target="mainFrame">categorie invoegen</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=beheer_artikelen" target="mainFrame">artikelen beheren</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=add_artikel" target="mainFrame">artikel invoegen</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=klantenlijst" target="mainFrame">klantenlijst</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=facturen" target="mainFrame">facturen</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=incasso_overzicht" target="mainFrame">incasso overzicht</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=paymentprocessor" target="mainFrame">payment processor</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=paymentsgood" target="mainFrame">goede betalingen</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=paymentswrong" target="mainFrame">foute betalingen</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=stornations" target="mainFrame">stornaties</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=stornationswrong" target="mainFrame">foute stornaties</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=paymentaandacht" target="mainFrame">aandacht betalingen</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=paymentsearch" target="mainFrame">betalingen zoeken</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=factuur_vorig_kwartaal" target="mainFrame">vorig kwartaal</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=factuur_alles" target="mainFrame">alle facturen</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=binnenkort_verlopen" target="mainFrame">binnenkort verlopen</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=maak_factuur" target="mainFrame">factuur maken</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=version" target="mainFrame">versie</a></td>
-			  </tr>
-			  <tr>
-				<td><a href="index.php?p=printQueue" target="mainFrame">print queue</a></td>
-			  </tr>';
-		}
-		  
-		  echo'</table>';
-	break;
-	
-	case "home":
-		$fact->notAllowed('1');
-	break;
 	
 	case "bekijk_facturen":
 		$fact->notAllowed('1');

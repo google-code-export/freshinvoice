@@ -45,6 +45,10 @@ define("CONFIGSDIR",	PATH."configs/");
 /* LOCALIZATION */
 define("DEFAULTLANG",	"english");
 
+/* reCAPTCHA.net public- and privatekey, sign up for free at recaptcha.net */
+define("RECAPTCHA_PUBLICKEY",	"");
+define("RECAPTCHA_PRIVATEKEY",	"");
+
 $btwTarrieven	= array('19.0','20.0','6.0','0.0');
 
 $KVKplaatsen	= array(
@@ -181,9 +185,21 @@ if(!class_exists('Services_JSON')) include_once(PATH.'includes/class.JSON.php');
 if(!class_exists('Manager')) include_once(PATH.'includes/class.Manager.php');
 if(!class_exists('Smarty')) include_once(PATH.'includes/Smarty/Smarty.class.php');
 if(!class_exists('factuur')) include_once(PATH.'includes/class.factuur.php');
+if(!class_exists('ReCaptchaResponse')) include_once(PATH.'includes/class.recaptchalib.php');
 
 $fact = new factuur();
 
 session_set_cookie_params(time()+(60*60*24*365), '/', '.'.DOMAIN);
 session_start();
+
+/* LOCALIZATION */
+if(!$_SESSION['language']) $_SESSION['language'] = DEFAULTLANG;
+		
+if(@file_exists("localization/".$_SESSION['language'].".lang.php"))
+{
+	include_once("localization/".$_SESSION['language'].".lang.php");
+}else
+{
+	include_once("localization/english.lang.php");
+}
 ?>
