@@ -187,10 +187,10 @@ if(!class_exists('Smarty')) include_once(PATH.'includes/Smarty/Smarty.class.php'
 if(!class_exists('factuur')) include_once(PATH.'includes/class.factuur.php');
 if(!class_exists('ReCaptchaResponse')) include_once(PATH.'includes/class.recaptchalib.php');
 
-$fact = new factuur();
-
 session_set_cookie_params(time()+(60*60*24*365), '/', '.'.DOMAIN);
 session_start();
+
+$fact = new factuur();
 
 /* LOCALIZATION */
 if(!$_SESSION['language']) $_SESSION['language'] = DEFAULTLANG;
