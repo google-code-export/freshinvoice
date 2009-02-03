@@ -920,5 +920,113 @@ class factuur {
 			return $aanhef." ".$achternaam;
 		}
 	}
+	
+	function invoices_get_open_vat ()
+	{
+		global $btwTarrieven;
+		
+		/* GET VAT SPECIFIC OPEN */
+		foreach($btwTarrieven AS $perc)
+		{
+			$query 	= "SELECT SUM( bedrag ) AS openstaand FROM factuur f, klant k WHERE f.klantId = k.klantId AND f.betaald = 'C' AND k.BTWtarrief = '".$perc."';";
+			$query 	= mysql_query($query) or die (mysql_error());
+			$record = mysql_fetch_array($query);
+				
+			$open_vat[$perc] = $this->displayMoney($record['openstaand']);
+		}
+
+		/* GET THE TOTAL OPEN */
+		$query 	= "SELECT SUM( bedrag ) AS openstaand FROM `factuur` WHERE betaald = 'C'";
+		$query 	= mysql_query($query) or die (mysql_error());
+		$record	= mysql_fetch_array($query);
+		$open_vat['total'] = $this->displayMoney($record['openstaand']);
+		
+		return $open_vat;
+	}
+	
+	function invoices_get_vat_last_quarter ()
+	{
+		global $btwTarrieven;
+		
+		/* GET VAT SPECIFIC OPEN */
+		foreach($btwTarrieven AS $perc)
+		{
+			$query 	= "SELECT SUM( bedrag ) AS voldaan
+			FROM factuur f, klant k
+			WHERE f.klantId = k.klantId AND
+			f.betaald = 'Y' AND
+			datum >= '".$fact->vorige_kwartaaldatum()."' AND
+			k.BTWtarrief = '".$perc."'";
+			$query 	= mysql_query($query) or die (mysql_error());
+			$record = mysql_fetch_array($query);
+				
+			$open_vat[$perc] = $this->displayMoney($record['openstaand']);
+		}
+
+		$query19 = "";
+			$query19 = mysql_query($query19) or die (mysql_error());
+			$record19=mysql_fetch_array($query19);
+
+			$query10 = "SELECT SUM( bedrag ) AS voldaan
+			FROM factuur f, klant k
+			WHERE f.klantId = k.klantId AND
+			f.betaald = 'Y' AND
+			datum >= '".$fact->vorige_kwartaaldatum()."' AND
+			k.BTWtarrief = '0.0';";
+			$query10 = mysql_query($query10) or die (mysql_error());
+			$record10=mysql_fetch_array($query10);
+
+			$query = "SELECT SUM( bedrag ) AS voldaan FROM `factuur` WHERE betaald = 'Y' AND datum >= '".$fact->vorige_kwartaaldatum()."'";
+			$query = mysql_query($query) or die (mysql_error());
+			$record=mysql_fetch_array($query);
+		
+		return $open_vat;
+	}
+	
+	function get_open_invoices()
+	{
+		$query = "SELECT * FROM factuur f, klant k
+		WHERE f.klantId = k.klantId AND
+		betaald='C' ORDER BY factuurId DESC";
+		$query = mysql_query($query) or die (mysql_error());
+		while($record=mysql_fetch_array($query))
+		{
+			$time = mktime(date('H',$record['datum']),date('i',$record['datum']),date('s',$record['datum']),date('m',$record['datum']),date('d',$record['datum'])+BETALINGS_TERMIJN,date('Y',$record['datum']));
+
+			if($time<time()){
+				$record['status'] = 'Over tijd, openstaand';
+			}else{
+				$record['status'] = 'Openstaand';
+			}
+
+			$record['name'] = $this->get_name($record['bedrijfsnaam'], $record['achternaam'], $record['voornaam']);
+			
+			$record['disp_date'] = date(FACTUUR_DATUM_FORMAT,$record['datum']);
+			
+			$record['excl'] = $record['bedrag']/(($record['BTWtarrief']/100)+1);
+			$record['vat'] = $this->displayMoney($record['bedrag']-$record['excl']);
+			$record['excl'] = $this->displayMoney($record['excl']);
+			$record['bedrag'] = $this->displayMoney($record['bedrag']);
+			
+			$open_invoices[] = $record;
+		}
+		
+		return $open_invoices;
+	}
+	
+	function get_name($companyname, $lastname, $sirname)
+	{
+		if($companyname != "")
+			{
+				$name = substr($companyname, 0, 40);
+			}else
+			{
+				$name   = substr($lastname, 0, 20);
+				$name  .= ', ' ;
+				$name  .= substr($sirname, 0, 20);
+			}
+			
+		return $name;
+	}
 }
 ?>
