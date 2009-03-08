@@ -61,4 +61,6 @@ $lang['at']					= "at";
 $lang['companytype']		= "Type of company";
 $lang['invoicelist']		= "Invoice list";
 $lang['captcha']			= "CAPTCHA; Proof that you are human";
+$lang['sommation']			= "Sommation added to print queue";
+$lang['sommationlong']		= "The sommation was succesfully added to the print queue."
 ?>

@@ -2673,10 +2673,45 @@ switch($_GET['p']){
                            <td>'.date("d-m-Y", mktime(0,0,0,date("m",$record['datum']),date("d",$record['datum'])+BETALINGS_TERMIJN,date("Y",$record['datum']))).'</td>
                            <td>'.$fact->displayMoney($record['bedrag']).'</td>
                         </tr>';
-	 	}
+	 		}
 		}
 
 		echo '</table>';
+		break;
+	
+	case "sommatie":
+		$fact->notAllowed('99');
+		
+		if(!$_GET['klantId'])
+		{
+			echo "geen klantId opgegeven.";
+			exit;
+		}
+		
+		$customer = $fact->getCustomer($_GET['klantId']);
+		$address = $fact->getAddress ($customer['bedrijfsnaam'], $customer['voornaam'], $customer['tussenvoegsel'], $customer['achternaam'], $customer['straatnaam'], $customer['huisnummer'], $customer['postcode'], $customer['plaatsnaam'], $customer['land']);
+		
+		ob_start();
+		
+		$fs = new FreshSmarty($fact);
+		$fs->assign("invoice", $fact->getSommationCosts($_GET['klantId']));
+		$fs->assign("address", $address);
+		$fs->assign("title", $fact->getTitle($customer['voornaam'], $customer['tussenvoegsel'], $customer['achternaam']));
+		$fs->assign("dateformal", strftime("%A %e %B %Y", mktime (0, 0, 0, date("m"), date("d"), date("Y"))));
+		$fs->display('sommation.letter.tpl.php');
+		
+		$content = ob_get_clean();
+		
+		$printQueue = new PrintQueue();
+		$printQueue->__fill (NULL, $content, 1, 0);
+		$printQueue->save();
+		
+		$fs = new FreshSmarty($fact);
+		$fs->assign("message", "sommation");
+		$fs->assign("messagetext", "sommationlong");
+		$fs->assign("tpl_name", "message");
+		$fs->display('index.tpl.php');
+		
 		break;
 }
 ?>
