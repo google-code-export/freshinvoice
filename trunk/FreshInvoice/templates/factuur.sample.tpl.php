@@ -3,6 +3,7 @@
 <head>
 <title>Factuur</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link type="text/css" rel="stylesheet" href="print.css" />
 <style>
 body { font-family: tahoma; font-size: 12px; }
 .bold { font-weight: bold; }

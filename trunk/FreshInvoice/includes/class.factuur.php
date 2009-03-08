@@ -1028,5 +1028,56 @@ class factuur {
 			
 		return $name;
 	}
+	
+	public function getSommationCosts ($klantId)
+	{
+		$query = "SELECT SUM(bedrag) AS tot FROM factuur WHERE betaald = 'C' AND klantId = '".mysql_real_escape_string($klantId)."'";
+		$query = mysql_query($query) or die (mysql_error());
+		$record = mysql_fetch_assoc($query);
+		
+		$invoice['open'] = $this->DisplayMoney($record['tot']);
+		$invoice['reminder'] = $this->DisplayMoney(REMINDER_COSTS);
+		$invoice['total'] = $this->DisplayMoney($record['tot'] + REMINDER_COSTS);
+		
+		return $invoice;
+	}
+	
+	public function getCustomer ($klantId)
+	{
+		$query = "SELECT * FROM `klant` WHERE klantId = '".mysql_real_escape_string($klantId)."'";
+		$query = mysql_query($query) or die (mysql_error());
+		return mysql_fetch_assoc($query);
+	}
+	
+	public function getAddress ($companyname, $firstname, $middlename, $lastname, $streetname, $housenumber, $zipcode, $city, $country)
+	{
+		$address = '';
+		
+		if($companyname != '')
+		{
+			$address .= $companyname."<br />\n";
+		}
+		
+		$address .= $firstname." ";
+		
+		if($middlename != '') $address .= $middlename." ";
+		
+		$address .= $lastname."<br />\n";
+		
+		$address .= $streetname." ".$housenumber."<br />\n";
+		$address .= $zipcode." ".$city."<br />\n";
+		$address .= $country."<br />\n";
+		
+		return $address;
+	}
+	
+	public function getTitle ($firstname, $middlename, $lastname)
+	{
+		$title = $firstname." ";
+		if($middlename != "") $title .= $middlename." ";
+		$title .= $lastname;
+		
+		return $title;
+	}
 }
 ?>
